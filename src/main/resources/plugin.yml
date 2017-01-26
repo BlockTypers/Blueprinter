@@ -1,0 +1,7 @@
+name: Blueprinter
+version: 1.0.0
+main:  com.blocktyper.blueprinter.BlueprinterPlugin
+author: spaarkimus
+website: blocktyper.com
+database: false
+description: Put a house in a bottle.

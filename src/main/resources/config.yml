@@ -1,0 +1,79 @@
+###############################################
+############## EXAMPLE ########################
+###############################################
+
+
+
+############## DEBUG ##########################
+locale: en
+debug: true
+log.recipes.enable: true
+
+
+############## RECIPES ############
+recipes:
+  - example
+
+
+###############################################
+#################### ITEMS ####################
+###############################################
+
+
+################## BEGIN Example Door ############
+recipe.example.name: Example Door
+recipe.example.rows: 
+  - DDD
+  - DID
+  - DDD
+recipe.example.mats: 
+  - D=DIAMOND
+  - I=IRON_DOOR
+recipe.root-door.output: IRON_DOOR
+
+
+layout.starter-house.mats.symbols: 
+  - G
+  - A
+  - I
+layout.starter-house.mats.definitions.G: GLASS
+layout.starter-house.mats.definitions.A: AIR
+layout.starter-house.mats.definitions.I: ICE
+layout.starter-house.floors: 
+  - F1
+  - F2
+  - F1
+layout.starter-house.floor.F1.rows: 
+  - R1
+  - R2
+layout.starter-house.floor.F1.row.R1: IAIAGAGAG
+layout.starter-house.floor.F1.row.R2: AIAGAGAGA
+
+layout.starter-house.floor.F2.rows: 
+  - R1
+  - R2 
+layout.starter-house.floor.F2.row.R1: AGAGAGAGA
+layout.starter-house.floor.F2.row.R2: GAGAGAGAG
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+  
+  
+  
