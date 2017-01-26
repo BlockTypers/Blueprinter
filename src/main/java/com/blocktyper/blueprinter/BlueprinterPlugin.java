@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import com.blocktyper.blueprinter.listeners.TestListener;
-import com.blocktyper.plugin.BlockTyperPlugin;
+import com.blocktyper.v1_1_8.plugin.BlockTyperPlugin;
 
 public class BlueprinterPlugin extends BlockTyperPlugin {
 	

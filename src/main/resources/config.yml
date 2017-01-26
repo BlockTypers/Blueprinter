@@ -12,7 +12,7 @@ log.recipes.enable: true
 
 ############## RECIPES ############
 recipes:
-  - example
+  - starter-house
 
 
 ###############################################
@@ -20,40 +20,86 @@ recipes:
 ###############################################
 
 
-################## BEGIN Example Door ############
-recipe.example.name: Example Door
-recipe.example.rows: 
-  - DDD
-  - DID
-  - DDD
-recipe.example.mats: 
-  - D=DIAMOND
-  - I=IRON_DOOR
-recipe.root-door.output: IRON_DOOR
+################## BEGIN Starter House ############
+recipe.starter-house.name: Starter House
+recipe.starter-house.rows: 
+  - FWH
+  - LLL
+  - CCC
+recipe.starter-house.mats: 
+  - C=STONE
+  - L=LOG
+  - F=FURNACE
+  - W=WORKBENCH
+  - H=CHEST
+recipe.starter-house.output: WORKBENCH
 
 
 layout.starter-house.mats.symbols: 
-  - G
+  - C
+  - L
+  - F
+  - W
+  - H
   - A
-  - I
-layout.starter-house.mats.definitions.G: GLASS
+layout.starter-house.mats.definitions.C: COBBLESTONE
+layout.starter-house.mats.definitions.L: LOG
+layout.starter-house.mats.definitions.F: FURNACE
+layout.starter-house.mats.definitions.W: WORKBENCH
+layout.starter-house.mats.definitions.H: CHEST
 layout.starter-house.mats.definitions.A: AIR
-layout.starter-house.mats.definitions.I: ICE
 layout.starter-house.floors: 
   - F1
   - F2
+  - F3
+  - F4
   - F1
 layout.starter-house.floor.F1.rows: 
   - R1
-  - R2
-layout.starter-house.floor.F1.row.R1: IAIAGAGAG
-layout.starter-house.floor.F1.row.R2: AIAGAGAGA
+  - R1
+  - R1
+  - R1
+  - R1
+  - R1
+  - R1
+layout.starter-house.floor.F1.row.R1: CCCCCCC
 
 layout.starter-house.floor.F2.rows: 
   - R1
-  - R2 
-layout.starter-house.floor.F2.row.R1: AGAGAGAGA
-layout.starter-house.floor.F2.row.R2: GAGAGAGAG
+  - R2
+  - R2
+  - R2
+  - R2
+  - R3
+  - R4
+layout.starter-house.floor.F2.row.R1: LLLALLL
+layout.starter-house.floor.F2.row.R2: LAAAAAL
+layout.starter-house.floor.F2.row.R3: LAHWFAL
+layout.starter-house.floor.F2.row.R4: LLLLLLL
+
+layout.starter-house.floor.F3.rows: 
+  - R1
+  - R2
+  - R2
+  - R3
+  - R2
+  - R2
+  - R4
+layout.starter-house.floor.F3.row.R1: LLLALLL
+layout.starter-house.floor.F3.row.R2: LAAAAAL
+layout.starter-house.floor.F3.row.R3: AAAAAAA
+layout.starter-house.floor.F3.row.R4: LLLALLL
+
+layout.starter-house.floor.F4.rows: 
+  - R1
+  - R2
+  - R2
+  - R2
+  - R2
+  - R2
+  - R1
+layout.starter-house.floor.F4.row.R1: LLLLLLL
+layout.starter-house.floor.F4.row.R2: LAAAAAL
 
 
 

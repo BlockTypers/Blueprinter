@@ -12,8 +12,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.blocktyper.blueprinter.BlueprinterPlugin;
+import com.blocktyper.v1_1_8.nbt.NBTItem;
 
 public class TestListener implements Listener {
 
@@ -76,11 +78,11 @@ public class TestListener implements Listener {
 			return;
 		}
 
-		if (event.getBlock().getType() != Material.IRON_BLOCK) {
-			plugin.debugInfo("Not an iron block");
+		ItemStack itemInHand = plugin.getPlayerHelper().getItemInHand(event.getPlayer());
+
+		if (!itemHasExpectedNbtKey(itemInHand, "starter-house")) {
+			plugin.debugInfo("Not starter-house");
 			return;
-		} else {
-			plugin.debugInfo("Iron block");
 		}
 
 		Location location = event.getBlock().getLocation();
@@ -122,7 +124,7 @@ public class TestListener implements Listener {
 
 	private void buildStructure(boolean isWaterAndAirTest, StallOrientation stallOrientation, Location location,
 			Map<String, Material> matMap) throws BuildException {
-		
+
 		double triggerBlockX = location.getX();
 		double triggerBlockZ = location.getZ();
 
@@ -155,7 +157,6 @@ public class TestListener implements Listener {
 				String row = plugin.getConfig()
 						.getString("layout.starter-house.floor." + floorNumber + ".row." + rowNumber);
 
-
 				if (row != null) {
 					for (char mat : row.toCharArray()) {
 
@@ -168,8 +169,8 @@ public class TestListener implements Listener {
 						if (location.getBlock() != null) {
 
 							if (isWaterAndAirTest) {
-								if(triggerBlockX != location.getX() || triggerBlockZ != location.getZ()){
-									if (location.getBlock().getType() != Material.AIR 
+								if (triggerBlockX != location.getX() || triggerBlockZ != location.getZ()) {
+									if (location.getBlock().getType() != Material.AIR
 											&& location.getBlock().getType() != Material.STATIONARY_WATER
 											&& location.getBlock().getType() != null) {
 										throw new BuildException("Non Air/Stationary Water Block!");
@@ -209,6 +210,23 @@ public class TestListener implements Listener {
 
 			location.setY(location.getY() + 1);
 		}
+	}
+
+	protected boolean itemHasExpectedNbtKey(ItemStack item, String expectedKey) {
+		return itemHasExpectedNbtKey(plugin, item, expectedKey);
+	}
+
+	public static boolean itemHasExpectedNbtKey(BlueprinterPlugin plugin, ItemStack item, String expectedKey) {
+		if (item != null && expectedKey != null) {
+			NBTItem nbtItem = new NBTItem(item);
+			if (nbtItem.hasKey(plugin.getRecipesNbtKey())) {
+				String value = nbtItem.getString(plugin.getRecipesNbtKey());
+				if (value != null && value.equals(expectedKey)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }
