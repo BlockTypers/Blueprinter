@@ -27,7 +27,7 @@ recipe.starter-house.rows:
   - LLL
   - CCC
 recipe.starter-house.mats: 
-  - C=STONE
+  - C=COBBLESTONE
   - L=LOG
   - F=FURNACE
   - W=WORKBENCH
