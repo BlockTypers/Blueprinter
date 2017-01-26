@@ -8,7 +8,7 @@ import com.blocktyper.plugin.BlockTyperPlugin;
 
 public class BlueprinterPlugin extends BlockTyperPlugin {
 	
-	public static final String RESOURCE_NAME = "com.blocktyper.houseinbottle.resources.HouseInBottleMessages";
+	public static final String RESOURCE_NAME = "com.blocktyper.blueprinter.resources.BlueprinterMessages";
 	public static final String RECIPES_KEY = "HOUSE_IN_BOTTLE_RECIPE_KEY";
 	
 	public BlueprinterPlugin(){
