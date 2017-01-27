@@ -1,13 +1,10 @@
 package com.blocktyper.blueprinter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.bukkit.Material;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -72,43 +69,28 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 	}
 
 	public Layout getLayout(String recipesKey) throws BuildException {
-		Layout layout = new Layout();
-
-		List<String> symbols = getConfig().getStringList("layout." + recipesKey + ".mats.symbols");
-
-		Map<String, Material> matMap = new HashMap<>();
-		for (String symbol : symbols) {
-			String mat = getConfig().getString("layout." + recipesKey + ".mats.definitions." + symbol);
-
-			if (mat != null && !mat.isEmpty()) {
-				matMap.put(symbol, Material.matchMaterial(mat));
-			} else {
-				throw new BuildException("Material symbol was null or empty: " + symbol);
-			}
-
+		return Layout.getLayout(recipesKey, this);
+	}
+	
+	public Layout getLayout(ItemStack item){
+		if(item == null){
+			return null;
 		}
-		layout.setMatMap(matMap);
-		layout.setFloorNumbers(getConfig().getStringList("layout." + recipesKey + ".floors"));
-		layout.setRowsNumberPerFloor(new HashMap<>());
-		layout.setFloorNumberRowNumberRowMap(new HashMap<>());
-		Map<String, Map<String, String>> rowsPerFloor = new HashMap<>();
-
-		for (String floorNumber : layout.getFloorNumbers()) {
-			rowsPerFloor.put(floorNumber, new HashMap<>());
-
-			List<String> rowNumbers = getConfig()
-					.getStringList("layout." + recipesKey + ".floor." + floorNumber + ".rows");
-
-			layout.getRowsNumberPerFloor().put(floorNumber, rowNumbers);
-			layout.getFloorNumberRowNumberRowMap().put(floorNumber, new HashMap<>());
-			for (String rowNumber : rowNumbers) {
-				String row = getConfig()
-						.getString("layout." + recipesKey + ".floor." + floorNumber + ".row." + rowNumber);
-				layout.getFloorNumberRowNumberRowMap().get(floorNumber).put(rowNumber, row);
-			}
-		}
-
+		
+		NBTItem nbtItem = new NBTItem(item);
+		
+		Layout layout = nbtItem.getObject(getLayoutKey(), Layout.class);
 		return layout;
+	}
+	
+	public ItemStack setLayout(ItemStack item, Layout layout){
+		if(item == null){
+			return null;
+		}
+		
+		NBTItem nbtItem = new NBTItem(item);
+		nbtItem.setObject(getLayoutKey(), layout);
+		return nbtItem.getItem();
 	}
 
 	@Override
@@ -117,14 +99,10 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 		String recipeKey = getRecipeKey(result);
 
 		if (recipeKey == null) {
-			info("Recipe key was null");
 			return;
-		}else{
-			info("Recipe key: " + recipeKey);
 		}
 
 		if (hasLayout(recipeKey)) {
-			info("Layout detected");
 			try {
 				Layout layout = getLayout(recipeKey);
 				ItemMeta itemMeta = result.getItemMeta();
@@ -140,8 +118,6 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 				event.getInventory().setResult(null);
 				e.printStackTrace();
 			}
-		}else{
-			info("No Layout detected");
 		}
 	}
 

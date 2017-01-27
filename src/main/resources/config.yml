@@ -12,49 +12,129 @@ log.recipes.enable: true
 
 ############## RECIPES ############
 recipes:
-  - starter-house
+  - simple-cobblestone-house
+  - simple-stone-house
+  - simple-fortress
+  
+  
+############## RECIPES-LAYOUT MAPPINGS ############
+simple-cobblestone-house.layout: simple
+simple-cobblestone-house.mats: simple-cobblestone
+
+simple-stone-house.layout: simple
+simple-stone-house.mats: simple-stone
+simple-stone-house.require-mats-loaded: true
+
+simple-fortress.layout: simple
+simple-fortress.mats: simple-obsidian
+simple-fortress.require-mats-in-bag: true
 
 
 ###############################################
-#################### ITEMS ####################
+#################### RECIPES ##################
 ###############################################
+recipes-settings.continuous-translation: true
 
-
-################## BEGIN Starter House ############
-recipe.starter-house.name: Starter House
-recipe.starter-house.rows: 
+################## BEGIN SIMPLE COBLESTONE HAUSE ############
+recipe.simple-cobblestone-house.name: Cobblestone House
+recipe.simple-cobblestone-house.de.name: Cobblestone Haus
+recipe.simple-cobblestone-house.locales:
+  - de
+recipe.simple-cobblestone-house.rows: 
   - FWH
   - LLL
   - CCC
-recipe.starter-house.mats: 
+recipe.simple-cobblestone-house.mats: 
   - C=COBBLESTONE
   - L=LOG
   - F=FURNACE
   - W=WORKBENCH
   - H=CHEST
-recipe.starter-house.output: WORKBENCH
+recipe.simple-cobblestone-house.output: WORKBENCH
+
+################## BEGIN SIMPLE STONE HAUSE ############
+recipe.simple-stone-house.name: Stone House
+recipe.simple-stone-house.de.name: Stein Haus
+recipe.simple-stone-house.locales:
+  - de
+recipe.simple-stone-house.rows: 
+  - FWH
+  - LLL
+  - SSS
+recipe.simple-stone-house.mats: 
+  - S=STONE
+  - L=LOG
+  - F=FURNACE
+  - W=WORKBENCH
+  - H=CHEST
+recipe.simple-stone-house.output: WORKBENCH
+recipe.simple-stone-house.lore:
+  - Requires Mats Loaded before placing.
+recipe.simple-stone-house.de.lore:
+  - Dieses Gebäude erfordert, dass die Materialien zuerst geladen werden.
+
+################## BEGIN SIMPLE FORTRESS ############
+recipe.simple-fortress.name: Fortress
+recipe.simple-fortress.de.name: Schloss
+recipe.simple-fortress.locales:
+  - de
+recipe.simple-fortress.rows: 
+  - FWH
+  - OOO
+  - OOO
+recipe.simple-fortress.mats: 
+  - O=OBSIDIAN
+  - F=FURNACE
+  - W=WORKBENCH
+  - H=CHEST
+recipe.simple-fortress.output: WORKBENCH
+recipe.simple-fortress.lore:
+  - This building spends the required materials from your bag.
+recipe.simple-fortress.de.lore:
+  - Dieses Gebäude verbringt die benötigten Materialien aus deine Tasche.
 
 
-layout.starter-house.mats.symbols: 
+################## BEGIN Layouts ############
+##MATS##
+layout.simple-cobblestone.mats.definitions.C: COBBLESTONE
+layout.simple-cobblestone.mats.definitions.L: LOG
+layout.simple-cobblestone.mats.definitions.F: FURNACE
+layout.simple-cobblestone.mats.definitions.W: WORKBENCH
+layout.simple-cobblestone.mats.definitions.H: CHEST
+layout.simple-cobblestone.mats.definitions.A: AIR
+
+layout.simple-stone.mats.definitions.C: STONE
+layout.simple-stone.mats.definitions.L: LOG
+layout.simple-stone.mats.definitions.F: FURNACE
+layout.simple-stone.mats.definitions.W: WORKBENCH
+layout.simple-stone.mats.definitions.H: CHEST
+layout.simple-stone.mats.definitions.A: AIR
+
+layout.simple-obsidian.mats.definitions.C: OBSIDIAN
+layout.simple-obsidian.mats.definitions.L: OBSIDIAN
+layout.simple-obsidian.mats.definitions.F: FURNACE
+layout.simple-obsidian.mats.definitions.W: WORKBENCH
+layout.simple-obsidian.mats.definitions.H: CHEST
+layout.simple-obsidian.mats.definitions.A: AIR
+
+
+##SYMBOLS AND FLOORS##
+layout.simple.mats.symbols: 
   - C
   - L
   - F
   - W
   - H
   - A
-layout.starter-house.mats.definitions.C: COBBLESTONE
-layout.starter-house.mats.definitions.L: LOG
-layout.starter-house.mats.definitions.F: FURNACE
-layout.starter-house.mats.definitions.W: WORKBENCH
-layout.starter-house.mats.definitions.H: CHEST
-layout.starter-house.mats.definitions.A: AIR
-layout.starter-house.floors: 
+  
+layout.simple.floors: 
   - F1
   - F2
   - F3
   - F4
   - F1
-layout.starter-house.floor.F1.rows: 
+  
+layout.simple.floor.F1.rows: 
   - R1
   - R1
   - R1
@@ -62,9 +142,9 @@ layout.starter-house.floor.F1.rows:
   - R1
   - R1
   - R1
-layout.starter-house.floor.F1.row.R1: CCCCCCC
+layout.simple.floor.F1.row.R1: CCCCCCC
 
-layout.starter-house.floor.F2.rows: 
+layout.simple.floor.F2.rows: 
   - R1
   - R2
   - R2
@@ -72,12 +152,12 @@ layout.starter-house.floor.F2.rows:
   - R2
   - R3
   - R4
-layout.starter-house.floor.F2.row.R1: LLLALLL
-layout.starter-house.floor.F2.row.R2: LAAAAAL
-layout.starter-house.floor.F2.row.R3: LAHWFAL
-layout.starter-house.floor.F2.row.R4: LLLLLLL
+layout.simple.floor.F2.row.R1: LLLALLL
+layout.simple.floor.F2.row.R2: LAAAAAL
+layout.simple.floor.F2.row.R3: LAHWFAL
+layout.simple.floor.F2.row.R4: LLLLLLL
 
-layout.starter-house.floor.F3.rows: 
+layout.simple.floor.F3.rows: 
   - R1
   - R2
   - R2
@@ -85,12 +165,12 @@ layout.starter-house.floor.F3.rows:
   - R2
   - R2
   - R4
-layout.starter-house.floor.F3.row.R1: LLLALLL
-layout.starter-house.floor.F3.row.R2: LAAAAAL
-layout.starter-house.floor.F3.row.R3: AAAAAAA
-layout.starter-house.floor.F3.row.R4: LLLALLL
+layout.simple.floor.F3.row.R1: LLLALLL
+layout.simple.floor.F3.row.R2: LAAAAAL
+layout.simple.floor.F3.row.R3: AAAAAAA
+layout.simple.floor.F3.row.R4: LLLALLL
 
-layout.starter-house.floor.F4.rows: 
+layout.simple.floor.F4.rows: 
   - R1
   - R2
   - R2
@@ -98,8 +178,8 @@ layout.starter-house.floor.F4.rows:
   - R2
   - R2
   - R1
-layout.starter-house.floor.F4.row.R1: LLLLLLL
-layout.starter-house.floor.F4.row.R2: LAAAAAL
+layout.simple.floor.F4.row.R1: LLLLLLL
+layout.simple.floor.F4.row.R2: LAAAAAL
 
 
 

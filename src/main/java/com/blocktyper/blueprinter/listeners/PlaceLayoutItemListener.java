@@ -1,5 +1,7 @@
 package com.blocktyper.blueprinter.listeners;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.BuildException;
 import com.blocktyper.blueprinter.Layout;
-import com.blocktyper.v1_1_8.nbt.NBTItem;
 
 public class PlaceLayoutItemListener implements Listener {
 
@@ -53,22 +54,16 @@ public class PlaceLayoutItemListener implements Listener {
 		return stallOrientation;
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = false)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.getBlock() == null) {
 			return;
 		}
 
 		ItemStack itemInHand = plugin.getPlayerHelper().getItemInHand(event.getPlayer());
-		
-		if(itemInHand == null){
-			return;
-		}
-		
-		NBTItem nbtItem = new NBTItem(itemInHand);
-		
-		Layout layout = nbtItem.getObject(plugin.getLayoutKey(), Layout.class);
-		
+
+		Layout layout = plugin.getLayout(itemInHand);
+
 		if (layout == null) {
 			plugin.debugInfo("No layout");
 			return;
@@ -86,11 +81,13 @@ public class PlaceLayoutItemListener implements Listener {
 		}
 
 		try {
+			validateMaterials(layout, event.getPlayer());
 			event.getPlayer().sendMessage(ChatColor.GREEN + ".");
 			buildStructure(true, stallOrientation, location.clone(), layout);
 			event.getPlayer().sendMessage(ChatColor.GREEN + "..");
 			buildStructure(false, stallOrientation, location.clone(), layout);
 			event.getPlayer().sendMessage(ChatColor.GREEN + ":)");
+			spendMaterialsInBag(layout, event.getPlayer());
 		} catch (BuildException e) {
 			event.getPlayer().sendMessage(ChatColor.RED + ":(");
 			event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
@@ -179,6 +176,95 @@ public class PlaceLayoutItemListener implements Listener {
 			}
 
 			location.setY(location.getY() + 1);
+		}
+	}
+
+	private void validateMaterials(Layout layout, Player player) throws BuildException {
+
+		if (!layout.requireMats()) {
+			return;
+		}
+
+		if (layout.isRequireMatsInBag()) {
+			for (Material material : layout.getRequirements().keySet()) {
+				int amountRequired = layout.getRequirements().get(material);
+				boolean requirementMet = amountRequired < 1;
+
+				if (player.getInventory() != null && player.getInventory().getContents() != null) {
+					HashMap<Integer, ? extends ItemStack> materialsInBag = player.getInventory().all(material);
+					if (materialsInBag != null) {
+						int currentAmountFound = 0;
+						for (Integer slot : materialsInBag.keySet()) {
+							ItemStack itemOfCurrentType = materialsInBag.get(slot);
+							if (Layout.itemIsSuitableForLoading(itemOfCurrentType)) {
+								currentAmountFound += itemOfCurrentType.getAmount();
+							}
+							if (currentAmountFound >= amountRequired) {
+								requirementMet = true;
+								break;
+							}
+						}
+
+					}
+				}
+
+				if (!requirementMet) {
+					throw new BuildException("$");
+				}
+			}
+		} else if (layout.isRequireMatsLoaded()) {
+			for (Material material : layout.getRequirements().keySet()) {
+				int amountRequired = layout.getRequirements().get(material);
+				boolean requirementMet = amountRequired < 1;
+
+				if (layout.getSupplies() != null && layout.getSupplies().get(material) != null) {
+					requirementMet = layout.getSupplies().get(material) >= amountRequired;
+				}
+
+				if (!requirementMet) {
+					throw new BuildException("$");
+				}
+			}
+		}
+		// throw new BuildException("Non Air/Stationary Water Block!");
+	}
+
+	private void spendMaterialsInBag(Layout layout, Player player) {
+
+		if (!layout.isRequireMatsInBag()) {
+			return;
+		}
+
+		for (Material material : layout.getRequirements().keySet()) {
+			int amountRequired = layout.getRequirements().get(material);
+
+			if (player.getInventory() != null && player.getInventory().getContents() != null) {
+				HashMap<Integer, ? extends ItemStack> materialsInBag = player.getInventory().all(material);
+				if (materialsInBag != null) {
+					for (Integer slot : materialsInBag.keySet()) {
+						ItemStack itemOfCurrentType = materialsInBag.get(slot);
+						if (itemOfCurrentType.getItemMeta() == null
+								|| (itemOfCurrentType.getItemMeta().getDisplayName() == null
+										&& (itemOfCurrentType.getItemMeta().getLore() == null
+												|| itemOfCurrentType.getItemMeta().getLore().isEmpty()))) {
+
+							if (amountRequired >= itemOfCurrentType.getAmount()) {
+								amountRequired -= itemOfCurrentType.getAmount();
+								itemOfCurrentType.setAmount(0);
+								player.getInventory().remove(itemOfCurrentType);
+							} else {
+								itemOfCurrentType.setAmount(itemOfCurrentType.getAmount() - amountRequired);
+								amountRequired = 0;
+							}
+						}
+
+						if (amountRequired < 1) {
+							break;
+						}
+					}
+
+				}
+			}
 		}
 	}
 
