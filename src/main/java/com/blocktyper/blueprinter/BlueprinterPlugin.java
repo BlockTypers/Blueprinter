@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.blocktyper.blueprinter.listeners.PlaceLayoutItemListener;
+import com.blocktyper.blueprinter.listeners.RequireMatsLoadedClickListener;
 import com.blocktyper.v1_1_8.nbt.NBTItem;
 import com.blocktyper.v1_1_8.plugin.BlockTyperPlugin;
 
@@ -25,6 +26,7 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 	public void onEnable() {
 		super.onEnable();
 		new PlaceLayoutItemListener(this);
+		new RequireMatsLoadedClickListener(this);
 	}
 
 	// begin localization
