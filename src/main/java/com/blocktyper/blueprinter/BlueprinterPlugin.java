@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.blocktyper.blueprinter.listeners.PlaceLayoutItemListener;
-import com.blocktyper.blueprinter.listeners.RequireMatsLoadedClickListener;
+import com.blocktyper.blueprinter.listeners.RequireMatsClickListener;
 import com.blocktyper.v1_1_8.nbt.NBTItem;
 import com.blocktyper.v1_1_8.plugin.BlockTyperPlugin;
 
@@ -26,7 +26,7 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 	public void onEnable() {
 		super.onEnable();
 		new PlaceLayoutItemListener(this);
-		new RequireMatsLoadedClickListener(this);
+		new RequireMatsClickListener(this);
 	}
 
 	// begin localization
@@ -65,11 +65,6 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 		return "LAYOUT-" + getRecipesNbtKey();
 	}
 
-	public boolean hasLayout(String recipesKey) {
-		List<String> symbols = getConfig().getStringList("layout." + recipesKey + ".mats.symbols");
-		return symbols != null && !symbols.isEmpty();
-	}
-
 	public Layout getLayout(String recipesKey) throws BuildException {
 		return Layout.getLayout(recipesKey, this);
 	}
@@ -104,7 +99,7 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 			return;
 		}
 
-		if (hasLayout(recipeKey)) {
+		if (Layout.hasLayout(recipeKey, this)) {
 			try {
 				Layout layout = getLayout(recipeKey);
 				ItemMeta itemMeta = result.getItemMeta();

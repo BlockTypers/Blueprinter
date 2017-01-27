@@ -1,8 +1,11 @@
 package com.blocktyper.blueprinter;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +19,13 @@ public class Layout {
 	private boolean requireMatsInBag;
 	private Map<Material, Integer> requirements;
 	private Map<Material, Integer> supplies;
+
+	private static Set<Material> NON_REQUIRED_MATERIALS;
+
+	static {
+		NON_REQUIRED_MATERIALS = new HashSet<Material>(
+				Arrays.asList(Material.AIR, Material.STATIONARY_LAVA, Material.STATIONARY_WATER, Material.WATER));
+	}
 
 	public List<String> getFloorNumbers() {
 		return floorNumbers;
@@ -80,19 +90,27 @@ public class Layout {
 	public void setSupplies(Map<Material, Integer> supplies) {
 		this.supplies = supplies;
 	}
-	
-	public boolean requireMats(){
+
+	public boolean requireMats() {
 		return isRequireMatsInBag() || isRequireMatsLoaded();
 	}
-	
-	
+
+	public static boolean hasLayout(String recipesKey, BlueprinterPlugin plugin) {
+		String layoutKey = plugin.getConfig().getString(recipesKey + ".layout");
+		return layoutKey != null && !layoutKey.isEmpty();
+	}
+
 	public static Layout getLayout(String recipesKey, BlueprinterPlugin plugin) throws BuildException {
 		Layout layout = new Layout();
-		
+
 		String layoutKey = plugin.getConfig().getString(recipesKey + ".layout");
 		String matsDefinitionsKey = plugin.getConfig().getString(recipesKey + ".mats");
-		boolean requireMatsLoaded = plugin.getConfig().getBoolean(recipesKey + ".require-mats-loaded", false);
 		boolean requireMatsInBag = plugin.getConfig().getBoolean(recipesKey + ".require-mats-in-bag", false);
+		boolean requireMatsLoaded = false;
+
+		if (!requireMatsInBag) {
+			requireMatsLoaded = plugin.getConfig().getBoolean(recipesKey + ".require-mats-loaded", false);
+		}
 
 		List<String> symbols = plugin.getConfig().getStringList("layout." + layoutKey + ".mats.symbols");
 
@@ -106,13 +124,18 @@ public class Layout {
 				throw new BuildException("Material symbol was null or empty: " + symbol);
 			}
 		}
-		
+
 		layout.setMatMap(matMap);
 		layout.setFloorNumbers(plugin.getConfig().getStringList("layout." + layoutKey + ".floors"));
 		layout.setRowsNumberPerFloor(new HashMap<>());
 		layout.setFloorNumberRowNumberRowMap(new HashMap<>());
-		layout.setRequireMatsLoaded(requireMatsLoaded);
 		layout.setRequireMatsInBag(requireMatsInBag);
+		layout.setRequireMatsLoaded(requireMatsLoaded);
+
+		if (layout.requireMats()) {
+			layout.setRequirements(new HashMap<>());
+		}
+
 		Map<String, Map<String, String>> rowsPerFloor = new HashMap<>();
 
 		for (String floorNumber : layout.getFloorNumbers()) {
@@ -127,10 +150,6 @@ public class Layout {
 				String row = plugin.getConfig()
 						.getString("layout." + layoutKey + ".floor." + floorNumber + ".row." + rowNumber);
 				layout.getFloorNumberRowNumberRowMap().get(floorNumber).put(rowNumber, row);
-				
-				if(layout.requireMats()){
-					layout.setRequirements(new HashMap<>());
-				}
 
 				for (char mat : row.toCharArray()) {
 
@@ -139,12 +158,14 @@ public class Layout {
 					if (material == null) {
 						throw new BuildException("NULL MAT!!! " + mat);
 					}
-					
-					if(layout.requireMats()){
-						if(!layout.getRequirements().containsKey(material)){
-							layout.getRequirements().put(material, 1);
-						}else{
-							layout.getRequirements().put(material, layout.getRequirements().get(material)+1);
+
+					if (layout.requireMats()) {
+						if (!NON_REQUIRED_MATERIALS.contains(material)) {
+							if (!layout.getRequirements().containsKey(material)) {
+								layout.getRequirements().put(material, 1);
+							} else {
+								layout.getRequirements().put(material, layout.getRequirements().get(material) + 1);
+							}
 						}
 					}
 				}
@@ -153,16 +174,14 @@ public class Layout {
 
 		return layout;
 	}
-	
-	public static boolean itemIsSuitableForLoading(ItemStack item){
-		if(item == null){
+
+	public static boolean itemIsSuitableForLoading(ItemStack item) {
+		if (item == null) {
 			return false;
 		}
-		
-		if (item.getItemMeta() == null
-				|| (item.getItemMeta().getDisplayName() == null
-						&& (item.getItemMeta().getLore() == null
-								|| item.getItemMeta().getLore().isEmpty()))) {
+
+		if (item.getItemMeta() == null || (item.getItemMeta().getDisplayName() == null
+				&& (item.getItemMeta().getLore() == null || item.getItemMeta().getLore().isEmpty()))) {
 			return true;
 		}
 		return false;
