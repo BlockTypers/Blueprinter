@@ -1,5 +1,6 @@
 package com.blocktyper.blueprinter.listeners;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.bukkit.Material;
@@ -10,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.BuildException;
 import com.blocktyper.blueprinter.Layout;
+import com.blocktyper.blueprinter.LocalizedMessageEnum;
 
 public abstract class LayoutBaseListener implements Listener{
 	protected BlueprinterPlugin plugin;
@@ -37,7 +39,9 @@ public abstract class LayoutBaseListener implements Listener{
 				amountFound = layout.getSupplies().get(material);
 			}
 			if (amountFound < amountRequired) {
-				throw new BuildException("$");
+				String missingRequiredMaterials = LocalizedMessageEnum.MISSING_REQUIRED_MATERIALS.getKey();
+				String rightClickToViewRequirements = LocalizedMessageEnum.RIGHT_CLICK_TO_VIEW_REQUIREMENTS.getKey();
+				throw new BuildException(Arrays.asList(missingRequiredMaterials, rightClickToViewRequirements));
 			}
 		}
 	}

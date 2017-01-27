@@ -113,7 +113,7 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 				event.getInventory().setResult(nbtItem.getItem());
 			} catch (BuildException e) {
 				event.getInventory().setResult(null);
-				e.printStackTrace();
+				e.sendMessages(event.getViewers().get(0), this);
 			}
 		}
 	}

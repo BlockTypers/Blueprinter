@@ -15,12 +15,16 @@ public class Layout {
 	private Map<String, List<String>> rowsNumberPerFloor;
 	private Map<String, Map<String, String>> floorNumberRowNumberRowMap;
 	private Map<String, Material> matMap;
+	private boolean buildDown;
+	private boolean allowReplacement;
 	private boolean requireMatsLoaded;
 	private boolean requireMatsInBag;
 	private Map<Material, Integer> requirements;
 	private Map<Material, Integer> supplies;
 
 	private static Set<Material> NON_REQUIRED_MATERIALS;
+
+	public static String SKIP_MATERIAL = "BLUEPRINTER_SKIP";
 
 	static {
 		NON_REQUIRED_MATERIALS = new HashSet<Material>(
@@ -91,6 +95,22 @@ public class Layout {
 		this.supplies = supplies;
 	}
 
+	public boolean isBuildDown() {
+		return buildDown;
+	}
+
+	public void setBuildDown(boolean buildDown) {
+		this.buildDown = buildDown;
+	}
+
+	public boolean isAllowReplacement() {
+		return allowReplacement;
+	}
+
+	public void setAllowReplacement(boolean allowReplacement) {
+		this.allowReplacement = allowReplacement;
+	}
+
 	public boolean requireMats() {
 		return isRequireMatsInBag() || isRequireMatsLoaded();
 	}
@@ -105,6 +125,8 @@ public class Layout {
 
 		String layoutKey = plugin.getConfig().getString(recipesKey + ".layout");
 		String matsDefinitionsKey = plugin.getConfig().getString(recipesKey + ".mats");
+		boolean buildDown = plugin.getConfig().getBoolean(recipesKey + ".build-down", false);
+		boolean allowReplacement = plugin.getConfig().getBoolean(recipesKey + ".allow-replacement", false);
 		boolean requireMatsInBag = plugin.getConfig().getBoolean(recipesKey + ".require-mats-in-bag", false);
 		boolean requireMatsLoaded = false;
 
@@ -116,12 +138,26 @@ public class Layout {
 
 		Map<String, Material> matMap = new HashMap<>();
 		for (String symbol : symbols) {
+
 			String mat = plugin.getConfig().getString("layout." + matsDefinitionsKey + ".mats.definitions." + symbol);
 
+			
+			
 			if (mat != null && !mat.isEmpty()) {
-				matMap.put(symbol, Material.matchMaterial(mat));
+				if(mat.equals(SKIP_MATERIAL)){
+					matMap.put(symbol, null);
+				}else{
+					Material material = Material.matchMaterial(mat);
+					if(material == null){
+						String undefinedMaterial = LocalizedMessageEnum.UNDEFINED_MATERIAL.getKey();
+						throw new BuildException(undefinedMaterial, new Object[] { symbol+"="+mat });
+					}
+					matMap.put(symbol, material);
+				}
+				
 			} else {
-				throw new BuildException("Material symbol was null or empty: " + symbol);
+				String undefinedMaterial = LocalizedMessageEnum.UNDEFINED_MATERIAL.getKey();
+				throw new BuildException(undefinedMaterial, new Object[] { symbol });
 			}
 		}
 
@@ -131,15 +167,15 @@ public class Layout {
 		layout.setFloorNumberRowNumberRowMap(new HashMap<>());
 		layout.setRequireMatsInBag(requireMatsInBag);
 		layout.setRequireMatsLoaded(requireMatsLoaded);
+		
+		layout.setAllowReplacement(allowReplacement);
+		layout.setBuildDown(buildDown);
 
 		if (layout.requireMats()) {
 			layout.setRequirements(new HashMap<>());
 		}
 
-		Map<String, Map<String, String>> rowsPerFloor = new HashMap<>();
-
 		for (String floorNumber : layout.getFloorNumbers()) {
-			rowsPerFloor.put(floorNumber, new HashMap<>());
 
 			List<String> rowNumbers = plugin.getConfig()
 					.getStringList("layout." + layoutKey + ".floor." + floorNumber + ".rows");
@@ -155,16 +191,14 @@ public class Layout {
 
 					Material material = layout.getMatMap().get(mat + "");
 
-					if (material == null) {
-						throw new BuildException("NULL MAT!!! " + mat);
-					}
-
-					if (layout.requireMats()) {
-						if (!NON_REQUIRED_MATERIALS.contains(material)) {
-							if (!layout.getRequirements().containsKey(material)) {
-								layout.getRequirements().put(material, 1);
-							} else {
-								layout.getRequirements().put(material, layout.getRequirements().get(material) + 1);
+					if (material != null) {
+						if (layout.requireMats()) {
+							if (!NON_REQUIRED_MATERIALS.contains(material)) {
+								if (!layout.getRequirements().containsKey(material)) {
+									layout.getRequirements().put(material, 1);
+								} else {
+									layout.getRequirements().put(material, layout.getRequirements().get(material) + 1);
+								}
 							}
 						}
 					}

@@ -1,13 +1,10 @@
 ###############################################
-############## EXAMPLE ########################
+############## BLUEPRINTER ####################
 ###############################################
 
-
-
-############## DEBUG ##########################
 locale: en
-debug: true
-log.recipes.enable: true
+debug: false
+log.recipes.enable: false
 
 
 ############## RECIPES ############
@@ -15,27 +12,12 @@ recipes:
   - simple-cobblestone-house
   - simple-stone-house
   - simple-fortress
+  - simple-gazebo
+  - simple-bunker
   
-  
-############## RECIPES-LAYOUT MAPPINGS ############
-simple-cobblestone-house.layout: simple
-simple-cobblestone-house.mats: simple-cobblestone
-
-simple-stone-house.layout: simple
-simple-stone-house.mats: simple-stone
-simple-stone-house.require-mats-loaded: true
-
-simple-fortress.layout: simple
-simple-fortress.mats: simple-obsidian
-simple-fortress.require-mats-in-bag: true
-
-
-###############################################
-#################### RECIPES ##################
-###############################################
 recipes-settings.continuous-translation: true
 
-################## BEGIN SIMPLE COBLESTONE HAUSE ############
+### SIMPLE COBLESTONE HAUSE ###
 recipe.simple-cobblestone-house.name: Cobblestone House
 recipe.simple-cobblestone-house.de.name: Cobblestone Haus
 recipe.simple-cobblestone-house.locales:
@@ -52,7 +34,8 @@ recipe.simple-cobblestone-house.mats:
   - H=CHEST
 recipe.simple-cobblestone-house.output: WORKBENCH
 
-################## BEGIN SIMPLE STONE HAUSE ############
+
+### SIMPLE STONE HAUSE ###
 recipe.simple-stone-house.name: Stone House
 recipe.simple-stone-house.de.name: Stein Haus
 recipe.simple-stone-house.locales:
@@ -69,13 +52,17 @@ recipe.simple-stone-house.mats:
   - H=CHEST
 recipe.simple-stone-house.output: WORKBENCH
 recipe.simple-stone-house.lore:
-  - Requires Mats Loaded before placing.
+  - Requires Materials to be 
+  - loaded before placing.
 recipe.simple-stone-house.de.lore:
-  - Dieses Geb�ude erfordert, dass die Materialien zuerst geladen werden.
+  - Dieses Gebäude erfordert, 
+  - dass die Materialien zuerst 
+  - geladen werden.
 
-################## BEGIN SIMPLE FORTRESS ############
+
+### SIMPLE FORTRESS ###
 recipe.simple-fortress.name: Fortress
-recipe.simple-fortress.de.name: Schloss
+recipe.simple-fortress.de.name: Festung
 recipe.simple-fortress.locales:
   - de
 recipe.simple-fortress.rows: 
@@ -89,13 +76,101 @@ recipe.simple-fortress.mats:
   - H=CHEST
 recipe.simple-fortress.output: WORKBENCH
 recipe.simple-fortress.lore:
-  - This building spends the required materials from your bag.
+  - This building spends the required 
+  - materials from your bag.
 recipe.simple-fortress.de.lore:
-  - Dieses Geb�ude verbringt die ben�tigten Materialien aus deine Tasche.
+  - Dieses Gebäude verbringt die 
+  - benätigten Materialien 
+  - aus deine Tasche.
+  
+  
+### SIMPLE GAZEBO ###
+recipe.simple-gazebo.name: Gazebo
+recipe.simple-gazebo.de.name: Pavillon
+recipe.simple-gazebo.locales: 
+  - de
+recipe.simple-gazebo.rows: 
+  - AAA
+  - FWH
+  - CCC
+recipe.simple-gazebo.mats: 
+  - C=COBBLESTONE
+  - A=AIR
+  - F=FURNACE
+  - W=WORKBENCH
+  - H=CHEST
+recipe.simple-gazebo.output: WORKBENCH
+recipe.simple-gazebo.lore: 
+  - Avoids replacing blocks 
+  - when possible.
+recipe.simple-gazebo.de.lore: 
+  - Vermeidet das Ersetzen von 
+  - Blöcken, wenn möglich.
+  
+  
+### SIMPLE BUNKER ###
+recipe.simple-bunker.name: Bunker
+recipe.simple-bunker.de.name: Bunker
+recipe.simple-bunker.locales: 
+  - de
+recipe.simple-bunker.rows: 
+  - CCC
+  - DTD
+  - GWG
+recipe.simple-bunker.mats: 
+  - C=COBBLESTONE
+  - G=GLOWSTONE
+  - W=WORKBENCH
+  - D=DIRT
+  - T=TNT
+recipe.simple-bunker.output: WORKBENCH
+recipe.simple-bunker.lore: 
+  - Built downwards.
+  - Blocks will be replaced
+recipe.simple-bunker.de.lore: 
+  - Nach unten gebaut.
+  - Blöcke werden ersetzt.
+  
+  
 
 
-################## BEGIN Layouts ############
-##MATS##
+
+
+
+
+
+
+######################################
+############# LAYOUTS ###############
+######################################
+
+#############################
+## RECIPES-LAYOUT MAPPINGS ##
+#############################
+simple-cobblestone-house.layout: simple
+simple-cobblestone-house.mats: simple-cobblestone
+
+simple-stone-house.layout: simple
+simple-stone-house.mats: simple-stone
+simple-stone-house.require-mats-loaded: true
+
+simple-gazebo.layout: simple
+simple-gazebo.mats: simple-gazebo
+simple-gazebo.allow-replacement: true
+
+simple-bunker.layout: simple
+simple-bunker.mats: simple-bunker
+simple-bunker.allow-replacement: true
+simple-bunker.build-down: true
+
+
+simple-fortress.layout: simple
+simple-fortress.mats: simple-fortress
+simple-fortress.require-mats-in-bag: true
+
+###############
+## MATERIALS ##
+###############
 layout.simple-cobblestone.mats.definitions.C: COBBLESTONE
 layout.simple-cobblestone.mats.definitions.L: LOG
 layout.simple-cobblestone.mats.definitions.F: FURNACE
@@ -110,15 +185,32 @@ layout.simple-stone.mats.definitions.W: WORKBENCH
 layout.simple-stone.mats.definitions.H: CHEST
 layout.simple-stone.mats.definitions.A: AIR
 
-layout.simple-obsidian.mats.definitions.C: OBSIDIAN
-layout.simple-obsidian.mats.definitions.L: OBSIDIAN
-layout.simple-obsidian.mats.definitions.F: FURNACE
-layout.simple-obsidian.mats.definitions.W: WORKBENCH
-layout.simple-obsidian.mats.definitions.H: CHEST
-layout.simple-obsidian.mats.definitions.A: AIR
+layout.simple-fortress.mats.definitions.C: OBSIDIAN
+layout.simple-fortress.mats.definitions.L: OBSIDIAN
+layout.simple-fortress.mats.definitions.F: FURNACE
+layout.simple-fortress.mats.definitions.W: WORKBENCH
+layout.simple-fortress.mats.definitions.H: CHEST
+layout.simple-fortress.mats.definitions.A: AIR
 
+layout.simple-gazebo.mats.definitions.C: COBBLESTONE
+layout.simple-gazebo.mats.definitions.L: BLUEPRINTER_SKIP
+layout.simple-gazebo.mats.definitions.F: FURNACE
+layout.simple-gazebo.mats.definitions.W: WORKBENCH
+layout.simple-gazebo.mats.definitions.H: CHEST
+layout.simple-gazebo.mats.definitions.A: BLUEPRINTER_SKIP
 
-##SYMBOLS AND FLOORS##
+layout.simple-bunker.mats.definitions.C: COBBLESTONE
+layout.simple-bunker.mats.definitions.L: DIRT
+layout.simple-bunker.mats.definitions.F: GLOWSTONE
+layout.simple-bunker.mats.definitions.W: WORKBENCH
+layout.simple-bunker.mats.definitions.H: GLOWSTONE
+layout.simple-bunker.mats.definitions.A: AIR
+
+########################
+## SYMBOLS AND FLOORS ##
+########################
+
+##SIMPLE LAYOUT
 layout.simple.mats.symbols: 
   - C
   - L
@@ -181,6 +273,7 @@ layout.simple.floor.F4.rows:
 layout.simple.floor.F4.row.R1: LLLLLLL
 layout.simple.floor.F4.row.R2: LAAAAAL
 
+##ADD SYMBOLS AND FLOORS FOR YOUR NEW LAYOUT BELOW
 
 
 
@@ -190,7 +283,25 @@ layout.simple.floor.F4.row.R2: LAAAAAL
 
 
 
+messages.block-typer-loading-recipes.en: Loading recipes
+messages.blueprinter-required-materials.en: Required Materials
+messages.blueprinter-improper-orientation.en: §4You must place this item directly in front of you.
+messages.blueprinter-missing-required-materials.en: §4You are missing required materials for construction.
+messages.blueprinter-right-click-to-view-requirements.en: §2Right click the item to see what is needed.
+messages.blueprinter-undefined-material.en: §4Material undefined - {0}
+messages.blueprinter-non-air-or-stationary-water-block-detected.en: §4A block which was not air or stationary water was in the way of construction - {0}
+messages.blueprinter-undefined-block-detected.en: §4An undefined block was encountered during construction - {0}
 
+
+
+messages.block-typer-loading-recipes.de: Laden Rezepte
+messages.blueprinter-required-materials.de: §4Benötigtes Material
+messages.blueprinter-improper-orientation.de: §4Du must diese Position direkt vor dir platzieren.
+messages.blueprinter-missing-required-materials.de: §4Du fehlst benötigte Materialien für den Bau.
+messages.blueprinter-right-click-to-view-requirements.de: §2Klicke mit der rechten Maustaste auf das Element, um zu sehen, was benötigt wird.
+messages.blueprinter-undefined-material.de: §4Material undefiniert - {0}
+messages.blueprinter-non-air-or-stationary-water-block-detected.de: §4Ein Block, der weder Luft noch stationäres Wasser war, war im Aufbau - {0}
+messages.blueprinter-undefined-block-detected.de: §4Ein unbestimmter Block wurde während der Konstruktion angetroffen - {0}
 
 
 

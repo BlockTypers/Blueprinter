@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -22,8 +23,12 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.Layout;
+import com.blocktyper.blueprinter.LocalizedMessageEnum;
+import com.blocktyper.v1_1_8.helpers.InvisibleLoreHelper;
 
 public class RequireMatsClickListener extends LayoutBaseListener {
+	
+	public static String REQUIRED_MATS_INVIS_PREFIX = "#BLUEPRINTER_REQUIRED_MATS";
 
 	public RequireMatsClickListener(BlueprinterPlugin plugin) {
 		super(plugin);
@@ -35,23 +40,28 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onInventoryClickEvent(InventoryClickEvent event) {
 
-		plugin.debugInfo("### onInventoryClickEvent: " + event.getClick().name());
-
 		if (!(event.getWhoClicked() instanceof Player)) {
 			return;
 		}
 
 		if (event.getClickedInventory() == null) {
-			plugin.debugInfo("### clicked inventory was null");
 			return;
 		}
-
+		
+		if(event.getInventory() != null && event.getInventory().getName() != null){
+			String inventoryName = event.getInventory().getName();
+			inventoryName = InvisibleLoreHelper.convertToVisibleString(inventoryName);
+			if(inventoryName.startsWith(REQUIRED_MATS_INVIS_PREFIX)){
+				event.setCancelled(true);
+				return;
+			}
+		}
+		
 		Player player = ((Player) event.getWhoClicked());
 
 		ItemStack item = event.getCurrentItem();
 
 		if (item == null || item.getAmount() > 1) {
-			plugin.debugInfo("### item == null || item.getAmount() > 1");
 			return;
 		}
 
@@ -60,33 +70,27 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 		if (layout != null) {
 
 			if (!layout.requireMats()) {
-				plugin.debugInfo("### !layout.requireMats()");
 				return;
 			}
 
 			if (layout.isRequireMatsLoaded() && event.getAction().equals(InventoryAction.SWAP_WITH_CURSOR)) {
-				plugin.debugInfo("### SWAP_WITH_CURSOR");
 				ItemStack cursor = event.getCursor();
 				
 				if (cursor == null) {
-					plugin.debugInfo("### cursor == null");
 					return;
 				} else if (!Layout.itemIsSuitableForLoading(cursor)) {
-					plugin.debugInfo("### !Layout.itemIsSuitableForLoading(cursor): " + cursor.getType().name());
 					return;
 				}
 				
 				Material cursorType = cursor.getType();
 
 				if (!layout.getRequirements().containsKey(cursorType)) {
-					plugin.debugInfo("###!layout.getRequirements().containsKey(cursor.getType())");
 					return;
 				}
 
 				int requiredAmount = layout.getRequirements().get(cursorType);
 
 				if (requiredAmount < 1) {
-					plugin.debugInfo("### requiredAmount < 1");
 					return;
 				}
 				
@@ -104,7 +108,6 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				int amountLeft = requiredAmount - amountLoaded;
 
 				if (amountLeft < 1) {
-					plugin.debugInfo("### amountLeft < 1");
 					return;
 				}
 
@@ -143,7 +146,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 						requiredItem.setItemMeta(itemMeta);
 					}
 					
-					if (requiredAmount > amountObtained) {
+					if (requiredAmount <= amountObtained) {
 						itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 						requiredItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
 					}
@@ -151,8 +154,11 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				}
 
 				int rows = (requiredItems.size() / 9) + (requiredItems.size() % 9 > 0 ? 1 : 0);
-
-				Inventory requiredMaterialsInventory = Bukkit.createInventory(null, rows * 9, "Required Materials");
+				
+				String inventoryName = plugin.getLocalizedMessage(LocalizedMessageEnum.REQUIRED_MATERIALS.getKey(), event.getWhoClicked());
+				inventoryName = InvisibleLoreHelper.convertToInvisibleString(REQUIRED_MATS_INVIS_PREFIX) + ChatColor.RESET + inventoryName;
+				
+				Inventory requiredMaterialsInventory = Bukkit.createInventory(null, rows * 9, inventoryName);
 
 				for (ItemStack requiredItem : requiredItems) {
 					requiredMaterialsInventory.addItem(requiredItem);

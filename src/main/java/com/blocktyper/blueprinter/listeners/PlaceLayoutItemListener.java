@@ -1,6 +1,10 @@
 package com.blocktyper.blueprinter.listeners;
 
-import org.bukkit.ChatColor;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.BuildException;
 import com.blocktyper.blueprinter.Layout;
+import com.blocktyper.blueprinter.LocalizedMessageEnum;
 
 public class PlaceLayoutItemListener extends LayoutBaseListener {
 
@@ -40,51 +45,43 @@ public class PlaceLayoutItemListener extends LayoutBaseListener {
 				event.getBlock().getLocation());
 
 		if (stallOrientation == null) {
-			event.getPlayer().sendMessage(ChatColor.RED + ":_(");
+			String improperOrientation = plugin.getLocalizedMessage(LocalizedMessageEnum.IMPROPER_ORIENTATION.getKey(),
+					event.getPlayer());
+			event.getPlayer().sendMessage(improperOrientation);
 			event.setCancelled(true);
 			return;
 		}
 
 		try {
 			validateMaterialAmounts(layout, event.getPlayer());
-			event.getPlayer().sendMessage(ChatColor.GREEN + ".");
 			buildStructure(true, stallOrientation, location.clone(), layout);
-			event.getPlayer().sendMessage(ChatColor.GREEN + "..");
 			buildStructure(false, stallOrientation, location.clone(), layout);
-			event.getPlayer().sendMessage(ChatColor.GREEN + ":)");
 			spendMaterialsInBag(layout, event.getPlayer());
 		} catch (BuildException e) {
-			event.getPlayer().sendMessage(ChatColor.RED + ":(");
-			event.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+			e.sendMessages(event.getPlayer(), plugin);
 			event.setCancelled(true);
 		}
 	}
 
-	private void buildStructure(boolean isWaterAndAirTest, PlacementOrientation stallOrientation, Location location,
+	private void buildStructure(boolean isWaterAndAirTest, PlacementOrientation placementOrientation, Location location,
 			Layout layout) throws BuildException {
 
 		double triggerBlockX = location.getX();
 		double triggerBlockZ = location.getZ();
 
-		String firstFloorNumber = layout.getFloorNumbers().get(0);
-		String firstRowNumber = layout.getRowsNumberPerFloor().get(firstFloorNumber).get(0);
-		String firstRow = layout.getFloorNumberRowNumberRowMap().get(firstFloorNumber).get(firstRowNumber);
+		boolean zAxis = placementOrientation.getOrientation() == PlacementOrientation.Z;
 
-		int shiftMaginitude = firstRow.length() / 2;
-		int shift = shiftMaginitude * (stallOrientation.isPositive() ? -1 : 1);
-
-		boolean zAxis = stallOrientation.getOrientation() == PlacementOrientation.Z;
-
-		if (zAxis) {
-			location.setZ(location.getZ() + shift);
-		} else {
-			location.setX(location.getX() + shift);
-		}
+		shiftStartingPoint(layout, zAxis, location, placementOrientation);
 
 		double startX = location.getX();
 		double startZ = location.getZ();
 
-		for (String floorNumber : layout.getFloorNumbers()) {
+		List<String> floorNumbers = new ArrayList<>(layout.getFloorNumbers());
+		if (layout.isBuildDown()) {
+			Collections.reverse(floorNumbers);
+		}
+
+		for (String floorNumber : floorNumbers) {
 
 			for (String rowNumber : layout.getRowsNumberPerFloor().get(floorNumber)) {
 				String row = layout.getFloorNumberRowNumberRowMap().get(floorNumber).get(rowNumber);
@@ -95,53 +92,94 @@ public class PlaceLayoutItemListener extends LayoutBaseListener {
 						Material material = layout.getMatMap().get(mat + "");
 
 						if (material == null) {
-							throw new BuildException("NULL MAT!!! " + mat);
+							nextBlock(zAxis, location, placementOrientation);
+							continue;
 						}
 
 						if (location.getBlock() != null) {
 
 							if (isWaterAndAirTest) {
-								if (triggerBlockX != location.getX() || triggerBlockZ != location.getZ()) {
+								if (!layout.isAllowReplacement()
+										&& (triggerBlockX != location.getX() || triggerBlockZ != location.getZ())) {
 									if (location.getBlock().getType() != Material.AIR
 											&& location.getBlock().getType() != Material.STATIONARY_WATER
 											&& location.getBlock().getType() != null) {
-										throw new BuildException("Non Air/Stationary Water Block!");
+										String nonAirOrStationaryWaterBlockDetected = LocalizedMessageEnum.NON_AIR_OR_STATIONARY_WATER_BLOCK_DETECTED
+												.getKey();
+										String coords = "({0},{1},{2})";
+										coords = new MessageFormat(coords)
+												.format(new Object[] { location.getBlockY() + "",
+														location.getBlockY() + "", location.getBlockZ() + "" });
+										throw new BuildException(nonAirOrStationaryWaterBlockDetected,
+												new Object[] { coords });
 									}
 								}
 							} else {
 								location.getBlock().setType(material);
 							}
 						} else {
-							throw new BuildException("Null block at location: " + location.getBlockX() + ","
-									+ location.getBlockY() + "," + location.getBlockZ());
+							String undefinedBlockDetected = LocalizedMessageEnum.UNDEFINED_BLOCK_DETECTED.getKey();
+							String coords = "({0},{1},{2})";
+							coords = new MessageFormat(coords).format(new Object[] { location.getBlockY() + "",
+									location.getBlockY() + "", location.getBlockZ() + "" });
+							throw new BuildException(undefinedBlockDetected, new Object[] { coords });
 						}
 
-						if (zAxis) {
-							location.setZ(location.getZ() + (stallOrientation.isPositive() ? 1 : -1));
-						} else {
-							location.setX(location.getX() + (stallOrientation.isPositive() ? 1 : -1));
-						}
+						nextBlock(zAxis, location, placementOrientation);
 					}
 				}
 
-				if (zAxis) {
-					location.setZ(startZ);
-					location.setX(location.getX() + (stallOrientation.isAway() ? 1 : -1));
-				} else {
-					location.setX(startX);
-					location.setZ(location.getZ() + (stallOrientation.isAway() ? 1 : -1));
-				}
+				nextRow(zAxis, startZ, startX, location, placementOrientation);
 
 			}
 
-			if (zAxis) {
-				location.setX(startX);
-			} else {
-				location.setZ(startZ);
-			}
-
-			location.setY(location.getY() + 1);
+			nextFloor(zAxis, startZ, startX, location, layout.isBuildDown());
 		}
+	}
+
+	private void shiftStartingPoint(Layout layout, boolean zAxis, Location location,
+			PlacementOrientation placementOrientation) {
+		String firstFloorNumber = layout.getFloorNumbers().get(0);
+		String firstRowNumber = layout.getRowsNumberPerFloor().get(firstFloorNumber).get(0);
+		String firstRow = layout.getFloorNumberRowNumberRowMap().get(firstFloorNumber).get(firstRowNumber);
+
+		int shiftMaginitude = firstRow.length() / 2;
+		int shift = shiftMaginitude * (placementOrientation.isPositive() ? -1 : 1);
+
+		if (zAxis) {
+			location.setZ(location.getZ() + shift);
+		} else {
+			location.setX(location.getX() + shift);
+		}
+	}
+
+	private void nextBlock(boolean zAxis, Location location, PlacementOrientation placementOrientation) {
+		if (zAxis) {
+			location.setZ(location.getZ() + (placementOrientation.isPositive() ? 1 : -1));
+		} else {
+			location.setX(location.getX() + (placementOrientation.isPositive() ? 1 : -1));
+		}
+	}
+
+	private void nextRow(boolean zAxis, double startZ, double startX, Location location,
+			PlacementOrientation placementOrientation) {
+		if (zAxis) {
+			location.setZ(startZ);
+			location.setX(location.getX() + (placementOrientation.isAway() ? 1 : -1));
+		} else {
+			location.setX(startX);
+			location.setZ(location.getZ() + (placementOrientation.isAway() ? 1 : -1));
+		}
+	}
+
+	private void nextFloor(boolean zAxis, double startZ, double startX, Location location, boolean isDown) {
+		if (zAxis) {
+			location.setX(startX);
+		} else {
+			location.setZ(startZ);
+		}
+
+		location.setY(location.getY() + (isDown ? -1 : 1));
 	}
 
 	private PlacementOrientation getPlacementOrientation(Player player, Location clickedLocation) {
