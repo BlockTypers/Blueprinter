@@ -63,6 +63,7 @@ public class PlaceLayoutItemListener extends LayoutBaseListener {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	private void buildStructure(boolean isWaterAndAirTest, PlacementOrientation placementOrientation, Location location,
 			Layout layout) throws BuildException {
 
@@ -115,7 +116,12 @@ public class PlaceLayoutItemListener extends LayoutBaseListener {
 									}
 								}
 							} else {
+								Byte data = layout.getMatDataMap() != null ? layout.getMatDataMap().get(mat + "") : 0;
 								location.getBlock().setType(material);
+								if(data != null && !data.equals(0)){
+									location.getBlock().setData(data);
+								}
+								
 							}
 						} else {
 							String undefinedBlockDetected = LocalizedMessageEnum.UNDEFINED_BLOCK_DETECTED.getKey();

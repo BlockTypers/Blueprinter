@@ -90,11 +90,11 @@ recipe.simple-gazebo.de.name: Pavillon
 recipe.simple-gazebo.locales: 
   - de
 recipe.simple-gazebo.rows: 
-  - AAA
+  - GGG
   - FWH
-  - CCC
+  - GGG
 recipe.simple-gazebo.mats: 
-  - C=COBBLESTONE
+  - G=STONE-1
   - A=AIR
   - F=FURNACE
   - W=WORKBENCH
@@ -147,71 +147,71 @@ recipe.simple-bunker.de.lore:
 #############################
 ## RECIPES-LAYOUT MAPPINGS ##
 #############################
-simple-cobblestone-house.layout: simple
-simple-cobblestone-house.mats: simple-cobblestone
+structures.simple-cobblestone-house.layout: simple
+structures.simple-cobblestone-house.mats: simple-cobblestone
 
-simple-stone-house.layout: simple
-simple-stone-house.mats: simple-stone
-simple-stone-house.require-mats-loaded: true
+structures.simple-stone-house.layout: simple
+structures.simple-stone-house.mats: simple-stone
+structures.simple-stone-house.require-mats-loaded: true
 
-simple-gazebo.layout: simple
-simple-gazebo.mats: simple-gazebo
-simple-gazebo.allow-replacement: true
+structures.simple-gazebo.layout: simple
+structures.simple-gazebo.mats: simple-gazebo
+structures.simple-gazebo.allow-replacement: true
 
-simple-bunker.layout: simple
-simple-bunker.mats: simple-bunker
-simple-bunker.allow-replacement: true
-simple-bunker.build-down: true
+structures.simple-bunker.layout: simple
+structures.simple-bunker.mats: simple-bunker
+structures.simple-bunker.allow-replacement: true
+structures.simple-bunker.build-down: true
 
 
-simple-fortress.layout: simple
-simple-fortress.mats: simple-fortress
-simple-fortress.require-mats-in-bag: true
+structures.simple-fortress.layout: simple
+structures.simple-fortress.mats: simple-fortress
+structures.simple-fortress.require-mats-in-bag: true
 
 ###############
 ## MATERIALS ##
 ###############
-layout.simple-cobblestone.mats.definitions.C: COBBLESTONE
-layout.simple-cobblestone.mats.definitions.L: LOG
-layout.simple-cobblestone.mats.definitions.F: FURNACE
-layout.simple-cobblestone.mats.definitions.W: WORKBENCH
-layout.simple-cobblestone.mats.definitions.H: CHEST
-layout.simple-cobblestone.mats.definitions.A: AIR
+mats.simple-cobblestone.C: COBBLESTONE
+mats.simple-cobblestone.L: LOG
+mats.simple-cobblestone.F: FURNACE
+mats.simple-cobblestone.W: WORKBENCH
+mats.simple-cobblestone.H: CHEST
+mats.simple-cobblestone.A: AIR
 
-layout.simple-stone.mats.definitions.C: STONE
-layout.simple-stone.mats.definitions.L: LOG
-layout.simple-stone.mats.definitions.F: FURNACE
-layout.simple-stone.mats.definitions.W: WORKBENCH
-layout.simple-stone.mats.definitions.H: CHEST
-layout.simple-stone.mats.definitions.A: AIR
+mats.simple-stone.C: STONE
+mats.simple-stone.L: LOG
+mats.simple-stone.F: FURNACE
+mats.simple-stone.W: WORKBENCH
+mats.simple-stone.H: CHEST
+mats.simple-stone.A: AIR
 
-layout.simple-fortress.mats.definitions.C: OBSIDIAN
-layout.simple-fortress.mats.definitions.L: OBSIDIAN
-layout.simple-fortress.mats.definitions.F: FURNACE
-layout.simple-fortress.mats.definitions.W: WORKBENCH
-layout.simple-fortress.mats.definitions.H: CHEST
-layout.simple-fortress.mats.definitions.A: AIR
+mats.simple-fortress.C: OBSIDIAN
+mats.simple-fortress.L: OBSIDIAN
+mats.simple-fortress.F: FURNACE
+mats.simple-fortress.W: WORKBENCH
+mats.simple-fortress.H: CHEST
+mats.simple-fortress.A: AIR
 
-layout.simple-gazebo.mats.definitions.C: COBBLESTONE
-layout.simple-gazebo.mats.definitions.L: BLUEPRINTER_SKIP
-layout.simple-gazebo.mats.definitions.F: FURNACE
-layout.simple-gazebo.mats.definitions.W: WORKBENCH
-layout.simple-gazebo.mats.definitions.H: CHEST
-layout.simple-gazebo.mats.definitions.A: BLUEPRINTER_SKIP
+mats.simple-gazebo.C: STONE-1
+mats.simple-gazebo.L: BLUEPRINTER_SKIP
+mats.simple-gazebo.F: FURNACE
+mats.simple-gazebo.W: WORKBENCH
+mats.simple-gazebo.H: CHEST
+mats.simple-gazebo.A: BLUEPRINTER_SKIP
 
-layout.simple-bunker.mats.definitions.C: COBBLESTONE
-layout.simple-bunker.mats.definitions.L: DIRT
-layout.simple-bunker.mats.definitions.F: GLOWSTONE
-layout.simple-bunker.mats.definitions.W: WORKBENCH
-layout.simple-bunker.mats.definitions.H: GLOWSTONE
-layout.simple-bunker.mats.definitions.A: AIR
+mats.simple-bunker.C: COBBLESTONE
+mats.simple-bunker.L: DIRT
+mats.simple-bunker.F: GLOWSTONE
+mats.simple-bunker.W: WORKBENCH
+mats.simple-bunker.H: GLOWSTONE
+mats.simple-bunker.A: AIR
 
 ########################
 ## SYMBOLS AND FLOORS ##
 ########################
 
 ##SIMPLE LAYOUT
-layout.simple.mats.symbols: 
+layouts.simple.symbols: 
   - C
   - L
   - F
@@ -219,14 +219,16 @@ layout.simple.mats.symbols:
   - H
   - A
   
-layout.simple.floors: 
+layouts.simple.floors: 
   - F1
   - F2
   - F3
   - F4
+  - F4
+  - F4
   - F1
   
-layout.simple.floor.F1.rows: 
+layouts.simple.floor.F1.rows: 
   - R1
   - R1
   - R1
@@ -234,9 +236,9 @@ layout.simple.floor.F1.rows:
   - R1
   - R1
   - R1
-layout.simple.floor.F1.row.R1: CCCCCCC
+layouts.simple.floor.F1.row.R1: CCCCCCC
 
-layout.simple.floor.F2.rows: 
+layouts.simple.floor.F2.rows: 
   - R1
   - R2
   - R2
@@ -244,12 +246,12 @@ layout.simple.floor.F2.rows:
   - R2
   - R3
   - R4
-layout.simple.floor.F2.row.R1: LLLALLL
-layout.simple.floor.F2.row.R2: LAAAAAL
-layout.simple.floor.F2.row.R3: LAHWFAL
-layout.simple.floor.F2.row.R4: LLLLLLL
+layouts.simple.floor.F2.row.R1: CLLALLC
+layouts.simple.floor.F2.row.R2: LAAAAAL
+layouts.simple.floor.F2.row.R3: LAHWFAL
+layouts.simple.floor.F2.row.R4: CLLLLLC
 
-layout.simple.floor.F3.rows: 
+layouts.simple.floor.F3.rows: 
   - R1
   - R2
   - R2
@@ -257,12 +259,12 @@ layout.simple.floor.F3.rows:
   - R2
   - R2
   - R4
-layout.simple.floor.F3.row.R1: LLLALLL
-layout.simple.floor.F3.row.R2: LAAAAAL
-layout.simple.floor.F3.row.R3: AAAAAAA
-layout.simple.floor.F3.row.R4: LLLALLL
+layouts.simple.floor.F3.row.R1: CLLALLC
+layouts.simple.floor.F3.row.R2: LAAAAAL
+layouts.simple.floor.F3.row.R3: AAAAAAA
+layouts.simple.floor.F3.row.R4: CLLALLC
 
-layout.simple.floor.F4.rows: 
+layouts.simple.floor.F4.rows: 
   - R1
   - R2
   - R2
@@ -270,8 +272,8 @@ layout.simple.floor.F4.rows:
   - R2
   - R2
   - R1
-layout.simple.floor.F4.row.R1: LLLLLLL
-layout.simple.floor.F4.row.R2: LAAAAAL
+layouts.simple.floor.F4.row.R1: CLLLLLC
+layouts.simple.floor.F4.row.R2: LAAAAAL
 
 ##ADD SYMBOLS AND FLOORS FOR YOUR NEW LAYOUT BELOW
 
