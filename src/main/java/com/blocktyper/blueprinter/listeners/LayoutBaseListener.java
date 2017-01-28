@@ -36,7 +36,7 @@ public abstract class LayoutBaseListener implements Listener{
 			if (layout.isRequireMatsInBag()) {
 				amountFound = getAmountOfMaterialInBag(player, material);
 			}else if (layout.isRequireMatsLoaded()) {
-				amountFound = layout.getSupplies().get(material);
+				amountFound = layout.getSupplies() != null && layout.getSupplies().containsKey(material) ? layout.getSupplies().get(material) : 0;
 			}
 			if (amountFound < amountRequired) {
 				String missingRequiredMaterials = LocalizedMessageEnum.MISSING_REQUIRED_MATERIALS.getKey();
