@@ -219,16 +219,59 @@ layouts.simple.symbols:
   - H
   - A
   
-layouts.simple.floors: 
-  - F1
-  - F2
-  - F3
-  - F4
-  - F4
-  - F4
-  - F1
+layouts.simple.layers: 
+  - L1
+  - L2
+  - L3
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L4
+  - L1
   
-layouts.simple.floor.F1.rows: 
+layouts.simple.layer.L1.rows: 
   - R1
   - R1
   - R1
@@ -236,9 +279,9 @@ layouts.simple.floor.F1.rows:
   - R1
   - R1
   - R1
-layouts.simple.floor.F1.row.R1: CCCCCCC
+layouts.simple.layer.L1.row.R1: CCCCCCC
 
-layouts.simple.floor.F2.rows: 
+layouts.simple.layer.L2.rows: 
   - R1
   - R2
   - R2
@@ -246,12 +289,12 @@ layouts.simple.floor.F2.rows:
   - R2
   - R3
   - R4
-layouts.simple.floor.F2.row.R1: CLLALLC
-layouts.simple.floor.F2.row.R2: LAAAAAL
-layouts.simple.floor.F2.row.R3: LAHWFAL
-layouts.simple.floor.F2.row.R4: CLLLLLC
+layouts.simple.layer.L2.row.R1: CLLALLC
+layouts.simple.layer.L2.row.R2: LAAAAAL
+layouts.simple.layer.L2.row.R3: LAHWFAL
+layouts.simple.layer.L2.row.R4: CLLLLLC
 
-layouts.simple.floor.F3.rows: 
+layouts.simple.layer.L3.rows: 
   - R1
   - R2
   - R2
@@ -259,12 +302,12 @@ layouts.simple.floor.F3.rows:
   - R2
   - R2
   - R4
-layouts.simple.floor.F3.row.R1: CLLALLC
-layouts.simple.floor.F3.row.R2: LAAAAAL
-layouts.simple.floor.F3.row.R3: AAAAAAA
-layouts.simple.floor.F3.row.R4: CLLALLC
+layouts.simple.layer.L3.row.R1: CLLALLC
+layouts.simple.layer.L3.row.R2: LAAAAAL
+layouts.simple.layer.L3.row.R3: AAAAAAA
+layouts.simple.layer.L3.row.R4: CLLALLC
 
-layouts.simple.floor.F4.rows: 
+layouts.simple.layer.L4.rows: 
   - R1
   - R2
   - R2
@@ -272,8 +315,8 @@ layouts.simple.floor.F4.rows:
   - R2
   - R2
   - R1
-layouts.simple.floor.F4.row.R1: CLLLLLC
-layouts.simple.floor.F4.row.R2: LAAAAAL
+layouts.simple.layer.L4.row.R1: CLLLLLC
+layouts.simple.layer.L4.row.R2: LAAAAAL
 
 ##ADD SYMBOLS AND FLOORS FOR YOUR NEW LAYOUT BELOW
 
