@@ -3,6 +3,7 @@ package com.blocktyper.blueprinter;
 public enum LocalizedMessageEnum {
 
 	REQUIRED_MATERIALS("blueprinter-required-materials"),
+	CONSTRUCTION_RECEIPT("blueprinter-construction-receipt"),
 	IMPROPER_ORIENTATION("blueprinter-improper-orientation"),
 	MISSING_REQUIRED_MATERIALS("blueprinter-missing-required-materials"),
 	RIGHT_CLICK_TO_VIEW_REQUIREMENTS("blueprinter-right-click-to-view-requirements"),

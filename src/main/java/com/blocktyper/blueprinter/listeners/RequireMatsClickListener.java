@@ -90,7 +90,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				if (!layout.getRequirements().containsKey(complexMaterial)) {
 					return;
 				}
-
+				
 				int requiredAmount = layout.getRequirements().get(complexMaterial);
 
 				if (requiredAmount < 1) {
@@ -100,16 +100,16 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				if (layout.getSupplies() == null) {
 					layout.setSupplies(new HashMap<>());
 				}
-
+				
 				if (!layout.getSupplies().containsKey(complexMaterial)) {
 					layout.getSupplies().put(complexMaterial, 0);
 				}
-
+				
 				Integer amountLoaded = layout.getSupplies().get(complexMaterial);
 				amountLoaded = amountLoaded != null ? amountLoaded : 0;
-
+				
 				int amountLeft = requiredAmount - amountLoaded;
-
+				
 				if (amountLeft < 1) {
 					return;
 				}
@@ -155,6 +155,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 					if (requiredAmount <= amountObtained) {
 						itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 						requiredItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
+						requiredItem.setItemMeta(itemMeta);
 					}
 					requiredItems.add(requiredItem);
 				}

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.blocktyper.blueprinter.data.ConstructionReciept;
+import com.blocktyper.blueprinter.listeners.ConstructionReceiptListener;
 import com.blocktyper.blueprinter.listeners.PlaceLayoutItemListener;
 import com.blocktyper.blueprinter.listeners.RequireMatsClickListener;
 import com.blocktyper.v1_1_8.nbt.NBTItem;
@@ -29,6 +30,7 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 		super.onEnable();
 		new PlaceLayoutItemListener(this);
 		new RequireMatsClickListener(this);
+		new ConstructionReceiptListener(this);
 	}
 
 	public String getRecipeKey(ItemStack item) {
@@ -48,6 +50,10 @@ public class BlueprinterPlugin extends BlockTyperPlugin {
 	
 	public String getConstructionRecieptKey() {
 		return "CONSTRUCTION_RECEIPT-" + getRecipesNbtKey();
+	}
+	
+	public String getBPChangePrefix() {
+		return "bpchange";
 	}
 
 	public Layout getLayout(String recipesKey) throws BuildException {

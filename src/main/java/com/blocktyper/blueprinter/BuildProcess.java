@@ -22,7 +22,6 @@ import com.blocktyper.v1_1_8.helpers.BlockDefinition;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
 import com.blocktyper.v1_1_8.helpers.Coord;
 import com.blocktyper.v1_1_8.helpers.IClickedBlockHelper.PlacementOrientation;
-import com.blocktyper.v1_1_8.nbt.NBTItem;
 
 public class BuildProcess {
 
@@ -40,19 +39,6 @@ public class BuildProcess {
 	public BuildProcess(BlueprinterPlugin plugin, ConstructionReciept constructionReciept, ItemStack item) {
 		this.plugin = plugin;
 		this.constructionReciept = constructionReciept;
-		
-		if(constructionReciept.getChangeCount() > 0 && (constructionReciept.getChanges() == null || constructionReciept.getChanges().isEmpty())){
-			constructionReciept.setChanges(new ArrayList<>());
-			NBTItem nbtItem = new NBTItem(item);
-			int changeCount = constructionReciept.getChangeCount();
-			constructionReciept.setChangeCount(0);
-			for(int index = 0; index < changeCount; index++){
-				BlockChange blockChange = nbtItem.getObject("bp-change" + index, BlockChange.class);
-				constructionReciept.addChange(blockChange);
-			}
-		}
-		
-		
 	}
 
 	public void init() {
@@ -72,17 +58,16 @@ public class BuildProcess {
 	}
 
 	@SuppressWarnings("deprecation")
-	public ConstructionReciept validateAndDoFirstBuild(HumanEntity player, Location location, BlockState replacedBlockState)
-			throws BuildException {
+	public ConstructionReciept validateAndDoFirstBuild(HumanEntity player, Location location,
+			BlockState replacedBlockState) throws BuildException {
 
 		if (!initCalled) {
 			throw new BuildException("init must be called before every call to validateAndDoFirstBuild()");
 		}
 		initCalled = false;
-		constructionReciept
-				.setReplacedComplexMaterial(new ComplexMaterial(replacedBlockState.getType(), replacedBlockState.getRawData()));
-		
-		
+		constructionReciept.setReplacedComplexMaterial(
+				new ComplexMaterial(replacedBlockState.getType(), replacedBlockState.getRawData()));
+
 		validateMaterialAmounts(constructionReciept.getLayout(), player);
 
 		PlacementOrientation placementOrientation = validatePlacementOrientation(player.getLocation(), location);
@@ -206,7 +191,6 @@ public class BuildProcess {
 							}
 
 							Map<Character, ComplexMaterial> symbolMap = constructionReciept.getSymbolMap();
-							
 
 							Byte changeData = layout.getMatDataMap() != null ? layout.getMatDataMap().get(mat + "") : 0;
 							ComplexMaterial complexMaterial = new ComplexMaterial(material, changeData);

@@ -16,12 +16,11 @@ public class ConstructionReciept {
 	int playerX;
 	int playerY;
 	int playerZ;
-	int changeCount;
 
 	private ComplexMaterial replacedComplexMaterial;
 	private Map<Character, ComplexMaterial> symbolMap = new HashMap<>();
 
-	private transient List<BlockChange> changes;
+	private List<BlockChange> changes;
 
 	public Layout getLayout() {
 		return layout;
@@ -87,14 +86,6 @@ public class ConstructionReciept {
 		this.replacedComplexMaterial = replacedComplexMaterial;
 	}
 
-	public int getChangeCount() {
-		return changeCount;
-	}
-
-	public void setChangeCount(int changeCount) {
-		this.changeCount = changeCount;
-	}
-
 	public Map<Character, ComplexMaterial> getSymbolMap() {
 		return symbolMap;
 	}
@@ -108,7 +99,6 @@ public class ConstructionReciept {
 			changes = new ArrayList<>();
 		}
 		changes.add(change);
-		changeCount++;
 	}
 
 	public List<BlockChange> getChanges() {
