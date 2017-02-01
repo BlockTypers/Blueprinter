@@ -44,7 +44,9 @@ public class BuildProcess {
 		if(constructionReciept.getChangeCount() > 0 && (constructionReciept.getChanges() == null || constructionReciept.getChanges().isEmpty())){
 			constructionReciept.setChanges(new ArrayList<>());
 			NBTItem nbtItem = new NBTItem(item);
-			for(int index = 0; index < constructionReciept.getChangeCount(); index++){
+			int changeCount = constructionReciept.getChangeCount();
+			constructionReciept.setChangeCount(0);
+			for(int index = 0; index < changeCount; index++){
 				BlockChange blockChange = nbtItem.getObject("bp-change" + index, BlockChange.class);
 				constructionReciept.addChange(blockChange);
 			}

@@ -108,6 +108,7 @@ public class ConstructionReciept {
 			changes = new ArrayList<>();
 		}
 		changes.add(change);
+		changeCount++;
 	}
 
 	public List<BlockChange> getChanges() {

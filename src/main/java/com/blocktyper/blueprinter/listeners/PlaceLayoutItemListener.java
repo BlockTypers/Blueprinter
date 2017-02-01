@@ -21,6 +21,7 @@ import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.BuildException;
 import com.blocktyper.blueprinter.BuildProcess;
 import com.blocktyper.blueprinter.Layout;
+import com.blocktyper.blueprinter.data.BlockChange;
 import com.blocktyper.blueprinter.data.ConstructionReciept;
 import com.blocktyper.v1_1_8.nbt.NBTItem;
 
@@ -110,9 +111,12 @@ public class PlaceLayoutItemListener extends LayoutBaseListener {
 
 					nbtItem.setObject(plugin.getConstructionRecieptKey(), constructionReceipt);
 					
-					
+					int blockChangeCount = 0;
 					if(constructionReceipt.getChanges() != null && !constructionReceipt.getChanges().isEmpty()){
-						
+						for(BlockChange change : constructionReceipt.getChanges()){
+							nbtItem.setObject("bp-change" + blockChangeCount, change);
+							blockChangeCount ++;
+						}
 					}
 					
 					player.getInventory().setItemInOffHand(null);
