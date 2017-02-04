@@ -21,7 +21,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.Layout;
 import com.blocktyper.blueprinter.LocalizedMessageEnum;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
@@ -30,10 +29,6 @@ import com.blocktyper.v1_1_8.helpers.InvisibleLoreHelper;
 public class RequireMatsClickListener extends LayoutBaseListener {
 
 	public static String REQUIRED_MATS_INVIS_PREFIX = "#BLUEPRINTER_REQUIRED_MATS";
-
-	public RequireMatsClickListener(BlueprinterPlugin plugin) {
-		super(plugin);
-	}
 
 	/*
 	 * ON INVENTORY CLICK
@@ -90,7 +85,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				if (!layout.getRequirements().containsKey(complexMaterial)) {
 					return;
 				}
-				
+
 				int requiredAmount = layout.getRequirements().get(complexMaterial);
 
 				if (requiredAmount < 1) {
@@ -100,16 +95,16 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				if (layout.getSupplies() == null) {
 					layout.setSupplies(new HashMap<>());
 				}
-				
+
 				if (!layout.getSupplies().containsKey(complexMaterial)) {
 					layout.getSupplies().put(complexMaterial, 0);
 				}
-				
+
 				Integer amountLoaded = layout.getSupplies().get(complexMaterial);
 				amountLoaded = amountLoaded != null ? amountLoaded : 0;
-				
+
 				int amountLeft = requiredAmount - amountLoaded;
-				
+
 				if (amountLeft < 1) {
 					return;
 				}
@@ -162,7 +157,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 
 				int rows = (requiredItems.size() / 9) + (requiredItems.size() % 9 > 0 ? 1 : 0);
 
-				String inventoryName = plugin.getLocalizedMessage(LocalizedMessageEnum.REQUIRED_MATERIALS.getKey(),
+				String inventoryName = getLocalizedMessage(LocalizedMessageEnum.REQUIRED_MATERIALS.getKey(),
 						event.getWhoClicked());
 				inventoryName = InvisibleLoreHelper.convertToInvisibleString(REQUIRED_MATS_INVIS_PREFIX)
 						+ ChatColor.RESET + inventoryName;
@@ -195,7 +190,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 			amountObtained = layout.getSupplies() != null && layout.getSupplies().get(complexMaterial) != null
 					? layout.getSupplies().get(complexMaterial) : 0;
 		} else {
-			amountObtained = plugin.getPlayerHelper().getAmountOfMaterialInBag(player, complexMaterial, false);
+			amountObtained = getPlayerHelper().getAmountOfMaterialInBag(player, complexMaterial, false);
 		}
 
 		return amountObtained;

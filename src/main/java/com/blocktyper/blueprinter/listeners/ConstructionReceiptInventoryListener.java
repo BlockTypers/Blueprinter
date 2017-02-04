@@ -18,7 +18,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.LocalizedMessageEnum;
 import com.blocktyper.blueprinter.data.ConstructionReciept;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
@@ -35,10 +34,6 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 	public static String MENU_ITEM_KEY_HIDE = "hide";
 	public static String MENU_ITEM_KEY_SYMBOL = "symbol";
 	public static String MENU_ITEM_KEY_SYMBOL_VALUE = "symbol-value";
-
-	public ConstructionReceiptInventoryListener(BlueprinterPlugin plugin) {
-		super(plugin);
-	}
 
 	private NBTItem getMenuItem(String displayName, Material material, String menuItemKey, List<String> loreLines) {
 		return getMenuItem(displayName, new ComplexMaterial(material, null), menuItemKey, loreLines);

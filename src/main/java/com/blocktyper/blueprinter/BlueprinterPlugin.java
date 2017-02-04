@@ -13,7 +13,6 @@ import com.blocktyper.blueprinter.data.ConstructionReciept;
 import com.blocktyper.blueprinter.listeners.PlaceLayoutItemListener;
 import com.blocktyper.blueprinter.listeners.RequireMatsClickListener;
 import com.blocktyper.v1_1_8.BlockTyperBasePlugin;
-import com.blocktyper.v1_1_8.BlockTyperListener;
 import com.blocktyper.v1_1_8.nbt.NBTItem;
 import com.blocktyper.v1_1_8.recipes.IRecipe;
 

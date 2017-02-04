@@ -10,7 +10,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.blocktyper.blueprinter.BlueprinterPlugin;
 import com.blocktyper.blueprinter.BuildException;
 import com.blocktyper.blueprinter.BuildProcess;
 import com.blocktyper.blueprinter.Layout;
@@ -19,17 +18,13 @@ import com.blocktyper.v1_1_8.nbt.NBTItem;
 
 public class PlaceLayoutItemListener extends LayoutBaseListener {
 
-	public PlaceLayoutItemListener(BlueprinterPlugin plugin) {
-		super(plugin);
-	}
-
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if (event.getBlock() == null) {
 			return;
 		}
 
-		ItemStack itemInHand = plugin.getPlayerHelper().getItemInHand(event.getPlayer());
+		ItemStack itemInHand = getPlayerHelper().getItemInHand(event.getPlayer());
 
 		Layout layout = plugin.getLayout(itemInHand);
 
