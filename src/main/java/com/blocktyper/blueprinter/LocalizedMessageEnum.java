@@ -9,7 +9,13 @@ public enum LocalizedMessageEnum {
 	RIGHT_CLICK_TO_VIEW_REQUIREMENTS("blueprinter-right-click-to-view-requirements"),
 	UNDEFINED_MATERIAL("blueprinter-undefined-material"),
 	NON_AIR_OR_STATIONARY_WATER_BLOCK_DETECTED("blueprinter-non-air-or-stationary-water-block-detected"),
-	UNDEFINED_BLOCK_DETECTED("blueprinter-undefined-block-detected");
+	UNDEFINED_BLOCK_DETECTED("blueprinter-undefined-block-detected"),
+	MATERIAL_SWAP("blueprinter-material-swap"),
+	RETURN("blueprinter-return"),
+	TELEPORT("blueprinter-teleport"),
+	HIDE("blueprinter-hide"),
+	SHOW("blueprinter-show"),
+	MISSING_WORLD("blueprinter-missing-world");
 
 	private String key;
 

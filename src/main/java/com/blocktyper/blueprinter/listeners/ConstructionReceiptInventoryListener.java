@@ -1,5 +1,6 @@
 package com.blocktyper.blueprinter.listeners;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,6 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,7 +23,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.blocktyper.blueprinter.BuildProcess;
@@ -28,6 +30,7 @@ import com.blocktyper.blueprinter.LocalizedMessageEnum;
 import com.blocktyper.blueprinter.data.BlockChange;
 import com.blocktyper.blueprinter.data.ConstructionReceipt;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
+import com.blocktyper.v1_1_8.helpers.Coord;
 import com.blocktyper.v1_1_8.helpers.InvisibleLoreHelper;
 import com.blocktyper.v1_1_8.nbt.NBTItem;
 import com.blocktyper.v1_1_8.nbt.NbtHelper;
@@ -57,9 +60,10 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 	@SuppressWarnings("deprecation")
 	private NBTItem getMenuItem(String displayName, ComplexMaterial complexMaterial, String menuItemKey,
 			List<String> loreLines) {
-		
+
 		Short damage = 1;
-		ItemStack menuItem = new ItemStack(complexMaterial.getMaterial(), 1, damage, complexMaterial.getData() == null ? 0 : complexMaterial.getData());
+		ItemStack menuItem = new ItemStack(complexMaterial.getMaterial(), 1, damage,
+				complexMaterial.getData() == null ? 0 : complexMaterial.getData());
 		ItemMeta itemMeta = menuItem.getItemMeta();
 
 		if (itemMeta == null) {
@@ -73,7 +77,7 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 			itemMeta.setDisplayName(displayName);
 		}
 
-		menuItem.setItemMeta(itemMeta);		
+		menuItem.setItemMeta(itemMeta);
 
 		NBTItem nbtItem = new NBTItem(menuItem);
 		nbtItem.setString(CONSTRUCTION_MENU_ITEM_ROOT_KEY, menuItemKey);
@@ -132,6 +136,16 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		event.setCancelled(true);
 		return;
 	}
+	
+	private void resaveConstructionReceipt(ConstructionReceipt constructionReceipt, HumanEntity player){
+		String uniqueId = constructionReceipt.getUuid();
+		ItemStack receiptInBag = NbtHelper.getMathcingItemByUniqueId(uniqueId, player.getInventory());
+		NBTItem receiptInBagNbtItem = new NBTItem(receiptInBag);
+		receiptInBagNbtItem.setObject(plugin.getConstructionRecieptKey(), constructionReceipt);
+
+		NbtHelper.replaceUniqueNbtItemInInventory(player, receiptInBagNbtItem.getItem(), uniqueId,
+				player.getInventory());
+	}
 
 	@SuppressWarnings("deprecation")
 	private void handleMenuClick(InventoryClickEvent event) {
@@ -150,37 +164,41 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		if (key == null) {
 			if (playerLastSymbolMap.containsKey(player.getName())) {
 				String symbol = playerLastSymbolMap.get(player.getName());
-				player.sendMessage("symbol: " + symbol);
 				playerLastSymbolMap.remove(player.getName());
 
 				Character symbolAsChar = null;
 				Byte data = clickedItem.getData() != null ? clickedItem.getData().getData() : null;
-				ComplexMaterial complexMaterial = new ComplexMaterial(clickedItem.getType(), data);
+				ComplexMaterial changeToMaterial = new ComplexMaterial(clickedItem.getType(), data);
 				
+
 				for (BlockChange change : constructionReceipt.getChanges()) {
 					if (symbol.equals(change.getSymbol() + "")) {
 						symbolAsChar = change.getSymbol();
-						change.setTo(complexMaterial);
+						
+						ComplexMaterial expectedMaterial = constructionReceipt.getSymbolMap().get(symbolAsChar);
+						
+						Block exisitingBlock = player.getWorld().getBlockAt(change.getCoord().getX(), change.getCoord().getY(), change.getCoord().getZ());
+						if(exisitingBlock != null){
+							ComplexMaterial existingMaterial = new ComplexMaterial(exisitingBlock.getType(), exisitingBlock.getData());
+							
+							if(expectedMaterial.equals(existingMaterial)){
+								change.setTo(changeToMaterial);
+							}else{
+								change.setTo(existingMaterial);
+							}
+						}
 					}
 				}
-				
-				constructionReceipt.getSymbolMap().put(symbolAsChar, complexMaterial);
+
+				constructionReceipt.getSymbolMap().put(symbolAsChar, changeToMaterial);
 
 				BuildProcess buildProcess = new BuildProcess(plugin, constructionReceipt);
-				buildProcess.applyChanges(player.getWorld());
+				buildProcess.applyChanges(player.getWorld(), false);
 
-				String uniqueId = constructionReceipt.getUuid();
-				ItemStack receiptInBag = NbtHelper.getMathcingItemByUniqueId(uniqueId, player.getInventory());
-				NBTItem receiptInBagNbtItem = new NBTItem(receiptInBag);
-				receiptInBagNbtItem.setObject(plugin.getConstructionRecieptKey(), constructionReceipt);
+				resaveConstructionReceipt(constructionReceipt, player);
 
-				NbtHelper.replaceUniqueNbtItemInInventory(player, receiptInBagNbtItem.getItem(), uniqueId,
-						player.getInventory());
-				
 				openInventory(player, constructionReceipt);
 			}
-
-			playerLastSymbolMap.remove(player.getName());
 
 			return;
 		}
@@ -190,12 +208,27 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		if (key.equals(MENU_ITEM_KEY_HIDE)) {
 			buildProcess.restoreOriginalBlocks(player.getWorld());
 			playerLastSymbolMap.remove(player.getName());
+			resaveConstructionReceipt(constructionReceipt, player);
+			openInventory(player, constructionReceipt);
 		} else if (key.equals(MENU_ITEM_KEY_SHOW)) {
-			buildProcess.applyChanges(player.getWorld());
+			buildProcess.applyChanges(player.getWorld(), true);
 			playerLastSymbolMap.remove(player.getName());
+			resaveConstructionReceipt(constructionReceipt, player);
+			openInventory(player, constructionReceipt);
 		} else if (key.equals(MENU_ITEM_KEY_TELEPORT)) {
+			
+			World world = plugin.getServer().getWorld(constructionReceipt.getWorld());
+			
+			if(world == null){
+				String missingWorldMessage = getLocalizedMessage(LocalizedMessageEnum.MISSING_WORLD.getKey(), player);
+				MessageFormat.format(missingWorldMessage, constructionReceipt.getWorld());
+				player.sendMessage(missingWorldMessage);
+				return;
+			}
+			
 			playerLastTeleportedMap.put(player.getName(), player.getLocation());
-			Location location = new Location(player.getWorld(), constructionReceipt.getPlayerX(),
+			
+			Location location = new Location(world, constructionReceipt.getPlayerX(),
 					constructionReceipt.getPlayerY(), constructionReceipt.getPlayerZ());
 
 			player.teleport(location);
@@ -209,31 +242,59 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 
 			NBTItem nbtItem = new NBTItem(clickedItem);
 			String symbol = nbtItem.getString(MENU_ITEM_KEY_SYMBOL_VALUE);
-			player.sendMessage("Click a block in your inventory to pick a new material for symbol group: " + symbol);
+			String materialSwapMessage = getLocalizedMessage(LocalizedMessageEnum.MATERIAL_SWAP.getKey(), player);
+			materialSwapMessage = new MessageFormat(materialSwapMessage).format(symbol);
+			player.sendMessage(materialSwapMessage);
 			playerLastSymbolMap.put(player.getName(), symbol);
 		}
 
 	}
 	
-	private void openInventory(HumanEntity player, ConstructionReceipt constructionReceipt){
-		List<ItemStack> menuItems = new ArrayList<>();
-
-		menuItems.add(getMenuItem("Hide <", Material.BUCKET, MENU_ITEM_KEY_HIDE, null).getItem());
-		menuItems.add(getMenuItem("Show  > ", Material.WATER_BUCKET, MENU_ITEM_KEY_SHOW, null).getItem());
-
-		menuItems.add(getMenuItem("Teleport", Material.COMPASS, MENU_ITEM_KEY_TELEPORT, null).getItem());
+	private void addTeleportMenuOptions(List<ItemStack> menuItems, HumanEntity player, ConstructionReceipt constructionReceipt){
+		
+		String teleportMessage = getLocalizedMessage(LocalizedMessageEnum.TELEPORT.getKey(), player);
+		
+		String locationMessage = Coord.getFormatted(constructionReceipt.getPlayerX(), constructionReceipt.getPlayerY(), constructionReceipt.getPlayerZ(), constructionReceipt.getWorld());//MessageFormat.format(locationFormat, constructionReceipt.getWorld(), constructionReceipt.getPlayerX()+"", constructionReceipt.getPlayerY()+"", constructionReceipt.getPlayerZ()+"");
+		List<String> locationLore = Arrays.asList(locationMessage);
+		
+		menuItems.add(getMenuItem(teleportMessage, Material.COMPASS, MENU_ITEM_KEY_TELEPORT, locationLore).getItem());
 
 		if (playerLastTeleportedMap.containsKey(player.getName())) {
-			menuItems.add(getMenuItem("Return", Material.BED, MENU_ITEM_KEY_RETURN, null).getItem());
+			Location returnLocation = playerLastTeleportedMap.get(player.getName());
+			String returnMessage = getLocalizedMessage(LocalizedMessageEnum.RETURN.getKey(), player);
+			
+			locationMessage = Coord.getFormatted(returnLocation, true);
+			locationLore = Arrays.asList(locationMessage);
+			
+			menuItems.add(getMenuItem(returnMessage, Material.BED, MENU_ITEM_KEY_RETURN, locationLore).getItem());
 		}
 
-		for (Character symbol : constructionReceipt.getSymbolMap().keySet()) {
-			ComplexMaterial complexMaterial = constructionReceipt.getSymbolMap().get(symbol);
-			List<String> lore = Arrays.asList("Change material for symbol group " + symbol);
-			NBTItem menuItem = getMenuItem(null, complexMaterial, MENU_ITEM_KEY_SYMBOL, lore);
-			menuItem.setString(MENU_ITEM_KEY_SYMBOL_VALUE, symbol + "");
-			menuItems.add(menuItem.getItem());
+	}
+
+	private void openInventory(HumanEntity player, ConstructionReceipt constructionReceipt) {
+		List<ItemStack> menuItems = new ArrayList<>();
+
+		if(constructionReceipt.isShowing()){
+			
+			String hideMessage = getLocalizedMessage(LocalizedMessageEnum.HIDE.getKey(), player);
+			menuItems.add(getMenuItem(hideMessage, Material.BUCKET, MENU_ITEM_KEY_HIDE, null).getItem());
+			
+			addTeleportMenuOptions(menuItems, player, constructionReceipt);
+
+			for (Character symbol : constructionReceipt.getSymbolMap().keySet()) {
+				ComplexMaterial complexMaterial = constructionReceipt.getSymbolMap().get(symbol);
+				List<String> lore = Arrays.asList("Change material for symbol group " + symbol);
+				NBTItem menuItem = getMenuItem(null, complexMaterial, MENU_ITEM_KEY_SYMBOL, lore);
+				menuItem.setString(MENU_ITEM_KEY_SYMBOL_VALUE, symbol + "");
+				menuItems.add(menuItem.getItem());
+			}
+		}else{
+			String showMessage = getLocalizedMessage(LocalizedMessageEnum.SHOW.getKey(), player);
+			menuItems.add(getMenuItem(showMessage, Material.WATER_BUCKET, MENU_ITEM_KEY_SHOW, null).getItem());
+			addTeleportMenuOptions(menuItems, player, constructionReceipt);
 		}
+
+		
 
 		playerActiveReceiptMap.put(player.getName(), constructionReceipt);
 		playerLastSymbolMap.remove(player.getName());

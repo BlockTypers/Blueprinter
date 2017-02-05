@@ -67,6 +67,8 @@ public class BuildProcess {
 		initCalled = false;
 		constructionReciept.setReplacedComplexMaterial(
 				new ComplexMaterial(replacedBlockState.getType(), replacedBlockState.getRawData()));
+		
+		constructionReciept.setWorld(location.getWorld().getName());
 
 		validateMaterialAmounts(constructionReciept.getLayout(), player);
 
@@ -93,11 +95,11 @@ public class BuildProcess {
 	}
 
 	public void restoreOriginalBlocks(World world) {
-		alterBlocks(getChanges(false), world);
+		alterBlocks(false, world, true);
 	}
 
-	public void applyChanges(World world) {
-		alterBlocks(getChanges(true), world);
+	public void applyChanges(World world, boolean alterToFromValues) {
+		alterBlocks(true, world, alterToFromValues);
 	}
 
 	private void alterBlocks(List<BlockDefinition> changes, Map<Coord, Block> blockMap) {
@@ -112,14 +114,37 @@ public class BuildProcess {
 		}
 	}
 
-	private void alterBlocks(List<BlockDefinition> changes, World world) {
-		if (changes != null && world != null) {
-			for (BlockDefinition change : changes) {
+	@SuppressWarnings("deprecation")
+	private void alterBlocks(boolean isTo, World world, boolean alterToFromValues) {
+		if (world != null) {
+			constructionReciept.setShowing(isTo);
+			for (BlockChange change : constructionReciept.getChanges()) {
 				Coord coord = change.getCoord();
+
 				Block block = world.getBlockAt(new Location(world, coord.getX(), coord.getY(), coord.getZ()));
-				if (block != null) {
-					setBlockType(change.getComplexMaterial(), block);
+
+				if (block == null) {
+					continue;
 				}
+
+				if(alterToFromValues){
+					ComplexMaterial existingComplexMaterial = new ComplexMaterial(block.getType(), block.getData());
+					ComplexMaterial expectedExistingComplexMaterial = isTo ? change.getFrom() : change.getTo();
+
+					boolean existingMisMatch = !expectedExistingComplexMaterial.equals(existingComplexMaterial);
+
+					if (existingMisMatch) {
+						if (isTo) {
+							change.setFrom(existingComplexMaterial);
+						} else {
+							change.setTo(existingComplexMaterial);
+						}
+					}
+				}
+				
+
+				ComplexMaterial newMaterial = isTo ? change.getTo() : change.getFrom();
+				setBlockType(newMaterial, block);
 			}
 		}
 	}

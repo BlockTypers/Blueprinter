@@ -309,7 +309,13 @@ messages.blueprinter-right-click-to-view-requirements.en: §2Right click the ite
 messages.blueprinter-undefined-material.en: §4Material undefined - {0}
 messages.blueprinter-non-air-or-stationary-water-block-detected.en: §4A block which was not air or stationary water was in the way of construction - {0}
 messages.blueprinter-undefined-block-detected.en: §4An undefined block was encountered during construction - {0}
-
+messages.blueprinter-construction-receipt.en: Construction Receipt
+messages.blueprinter-material-swap.en: Click a block in your inventory to pick a new material for symbol group [{0}]
+messages.blueprinter-return.en: Return
+messages.blueprinter-teleport.en: Teleport
+messages.blueprinter-hide.en: Hide
+messages.blueprinter-show.en: Show
+messages.blueprinter-missing-world.en: Missing world {0}
 
 
 messages.block-typer-loading-recipes.de: Laden Rezepte
@@ -320,9 +326,13 @@ messages.blueprinter-right-click-to-view-requirements.de: §2Klicke mit der rech
 messages.blueprinter-undefined-material.de: §4Material undefiniert - {0}
 messages.blueprinter-non-air-or-stationary-water-block-detected.de: §4Ein Block, der weder Luft noch stationäres Wasser war, war im Aufbau - {0}
 messages.blueprinter-undefined-block-detected.de: §4Ein unbestimmter Block wurde während der Konstruktion angetroffen - {0}
-
-
-
+messages.blueprinter-construction-receipt.de: Bauempfang
+messages.blueprinter-material-swap.de: Klicke auf einen Block in deinem Inventar, um ein neues Material für die Symbolgruppe [{0}]
+messages.blueprinter-return.de: Geh zurück
+messages.blueprinter-teleport.de: Teleport
+messages.blueprinter-hide.de: Gebäude ausblenden
+messages.blueprinter-show.de: Gebäude anzeigen
+messages.blueprinter-missing-world.de: Fehlende Welt {0}
 
 
 

@@ -16,7 +16,9 @@ public class ConstructionReceipt {
 	int playerX;
 	int playerY;
 	int playerZ;
+	String world;
 	String uuid;
+	boolean showing = true;
 
 	private ComplexMaterial replacedComplexMaterial;
 	private Map<Character, ComplexMaterial> symbolMap = new HashMap<>();
@@ -78,6 +80,15 @@ public class ConstructionReceipt {
 	public void setPlayerZ(int playerZ) {
 		this.playerZ = playerZ;
 	}
+	
+	
+	public String getWorld() {
+		return world;
+	}
+
+	public void setWorld(String world) {
+		this.world = world;
+	}
 
 	public String getUuid() {
 		return uuid;
@@ -117,6 +128,16 @@ public class ConstructionReceipt {
 	public void setChanges(List<BlockChange> changes) {
 		this.changes = changes;
 	}
+
+	public boolean isShowing() {
+		return showing;
+	}
+
+	public void setShowing(boolean showing) {
+		this.showing = showing;
+	}
+	
+	
 	
 	
 
