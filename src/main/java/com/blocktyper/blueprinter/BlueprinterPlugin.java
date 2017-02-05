@@ -9,7 +9,8 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.blocktyper.blueprinter.data.ConstructionReciept;
+import com.blocktyper.blueprinter.data.ConstructionReceipt;
+import com.blocktyper.blueprinter.listeners.ConstructionReceiptInventoryListener;
 import com.blocktyper.blueprinter.listeners.PlaceLayoutItemListener;
 import com.blocktyper.blueprinter.listeners.RequireMatsClickListener;
 import com.blocktyper.v1_1_8.BlockTyperBasePlugin;
@@ -29,6 +30,7 @@ public class BlueprinterPlugin extends BlockTyperBasePlugin {
 		super.onEnable();
 		registerListener(PlaceLayoutItemListener.class);
 		registerListener(RequireMatsClickListener.class);
+		registerListener(ConstructionReceiptInventoryListener.class);
 	}
 
 	public String getLayoutKey() {
@@ -50,11 +52,11 @@ public class BlueprinterPlugin extends BlockTyperBasePlugin {
 		return getObject(item, getLayoutKey(), Layout.class);
 	}
 
-	public ConstructionReciept getConstructionReciept(ItemStack item) {
+	public ConstructionReceipt getConstructionReciept(ItemStack item) {
 		if (item == null) {
 			return null;
 		}
-		return getObject(item, getConstructionRecieptKey(), ConstructionReciept.class);
+		return getObject(item, getConstructionRecieptKey(), ConstructionReceipt.class);
 	}
 
 	public ItemStack setLayout(ItemStack item, Layout layout) {

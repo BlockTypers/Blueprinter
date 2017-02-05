@@ -8,7 +8,7 @@ import java.util.Map;
 import com.blocktyper.blueprinter.Layout;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
 
-public class ConstructionReciept {
+public class ConstructionReceipt {
 	Layout layout;
 	int x;
 	int y;
@@ -16,6 +16,7 @@ public class ConstructionReciept {
 	int playerX;
 	int playerY;
 	int playerZ;
+	String uuid;
 
 	private ComplexMaterial replacedComplexMaterial;
 	private Map<Character, ComplexMaterial> symbolMap = new HashMap<>();
@@ -76,6 +77,14 @@ public class ConstructionReciept {
 
 	public void setPlayerZ(int playerZ) {
 		this.playerZ = playerZ;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public ComplexMaterial getReplacedComplexMaterial() {

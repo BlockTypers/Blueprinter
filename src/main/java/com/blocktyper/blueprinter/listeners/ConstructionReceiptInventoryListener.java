@@ -2,27 +2,35 @@ package com.blocktyper.blueprinter.listeners;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.blocktyper.blueprinter.BuildProcess;
 import com.blocktyper.blueprinter.LocalizedMessageEnum;
-import com.blocktyper.blueprinter.data.ConstructionReciept;
+import com.blocktyper.blueprinter.data.BlockChange;
+import com.blocktyper.blueprinter.data.ConstructionReceipt;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
 import com.blocktyper.v1_1_8.helpers.InvisibleLoreHelper;
 import com.blocktyper.v1_1_8.nbt.NBTItem;
+import com.blocktyper.v1_1_8.nbt.NbtHelper;
 
 public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 
@@ -32,8 +40,15 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 
 	public static String MENU_ITEM_KEY_SHOW = "show";
 	public static String MENU_ITEM_KEY_HIDE = "hide";
+	public static String MENU_ITEM_KEY_TELEPORT = "teleport";
+	public static String MENU_ITEM_KEY_RETURN = "return";
 	public static String MENU_ITEM_KEY_SYMBOL = "symbol";
 	public static String MENU_ITEM_KEY_SYMBOL_VALUE = "symbol-value";
+
+	private Map<String, ConstructionReceipt> playerActiveReceiptMap = new HashMap<>();
+	private Map<String, Location> playerLastTeleportedMap = new HashMap<>();
+
+	private Map<String, String> playerLastSymbolMap = new HashMap<>();
 
 	private NBTItem getMenuItem(String displayName, Material material, String menuItemKey, List<String> loreLines) {
 		return getMenuItem(displayName, new ComplexMaterial(material, null), menuItemKey, loreLines);
@@ -42,12 +57,13 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 	@SuppressWarnings("deprecation")
 	private NBTItem getMenuItem(String displayName, ComplexMaterial complexMaterial, String menuItemKey,
 			List<String> loreLines) {
-		Material material = complexMaterial.getMaterial();
-		ItemStack menuItem = new ItemStack(material);
+		
+		Short damage = 1;
+		ItemStack menuItem = new ItemStack(complexMaterial.getMaterial(), 1, damage, complexMaterial.getData() == null ? 0 : complexMaterial.getData());
 		ItemMeta itemMeta = menuItem.getItemMeta();
 
-		if (complexMaterial.getData() != null) {
-			menuItem.setData(new MaterialData(material, complexMaterial.getData()));
+		if (itemMeta == null) {
+			itemMeta = new ItemStack(Material.COBBLESTONE).getItemMeta();
 		}
 
 		if (loreLines != null) {
@@ -57,11 +73,16 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 			itemMeta.setDisplayName(displayName);
 		}
 
-		menuItem.setItemMeta(itemMeta);
+		menuItem.setItemMeta(itemMeta);		
 
 		NBTItem nbtItem = new NBTItem(menuItem);
 		nbtItem.setString(CONSTRUCTION_MENU_ITEM_ROOT_KEY, menuItemKey);
 		return nbtItem;
+	}
+
+	private String getMenuItemKey(ItemStack clickedItem) {
+		NBTItem nbtItem = new NBTItem(clickedItem);
+		return nbtItem.getString(CONSTRUCTION_MENU_ITEM_ROOT_KEY);
 	}
 
 	/*
@@ -83,40 +104,150 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 			inventoryName = InvisibleLoreHelper.convertToVisibleString(inventoryName);
 			if (inventoryName.startsWith(BLUEPRINTER_CONSTRUCTION_RECEIPT_INVIS_PREFIX)) {
 				event.setCancelled(true);
+				handleMenuClick(event);
 				return;
 			}
 		}
 
-		HumanEntity player = event.getWhoClicked();
-
-		ItemStack itemInHand = player.getEquipment().getItemInMainHand();
-
-		if (itemInHand == null || itemInHand.getType() == Material.AIR) {
+		if (event.getClick() != ClickType.RIGHT) {
 			return;
 		}
 
-		ConstructionReciept constructionReciept = plugin.getConstructionReciept(itemInHand);
+		if (event.getClickedInventory().getType() != InventoryType.PLAYER) {
+			return;
+		}
 
+		HumanEntity player = event.getWhoClicked();
+
+		ItemStack clickedItem = event.getCurrentItem();
+
+		if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+			return;
+		}
+
+		ConstructionReceipt constructionReceipt = plugin.getConstructionReciept(clickedItem);
+
+		openInventory(player, constructionReceipt);
+
+		event.setCancelled(true);
+		return;
+	}
+
+	@SuppressWarnings("deprecation")
+	private void handleMenuClick(InventoryClickEvent event) {
+
+		ItemStack clickedItem = event.getCurrentItem();
+
+		HumanEntity player = event.getWhoClicked();
+
+		if (clickedItem == null || clickedItem.getType() == Material.AIR) {
+			return;
+		}
+
+		ConstructionReceipt constructionReceipt = playerActiveReceiptMap.get(player.getName());
+
+		String key = getMenuItemKey(clickedItem);
+		if (key == null) {
+			if (playerLastSymbolMap.containsKey(player.getName())) {
+				String symbol = playerLastSymbolMap.get(player.getName());
+				player.sendMessage("symbol: " + symbol);
+				playerLastSymbolMap.remove(player.getName());
+
+				Character symbolAsChar = null;
+				Byte data = clickedItem.getData() != null ? clickedItem.getData().getData() : null;
+				ComplexMaterial complexMaterial = new ComplexMaterial(clickedItem.getType(), data);
+				
+				for (BlockChange change : constructionReceipt.getChanges()) {
+					if (symbol.equals(change.getSymbol() + "")) {
+						symbolAsChar = change.getSymbol();
+						change.setTo(complexMaterial);
+					}
+				}
+				
+				constructionReceipt.getSymbolMap().put(symbolAsChar, complexMaterial);
+
+				BuildProcess buildProcess = new BuildProcess(plugin, constructionReceipt);
+				buildProcess.applyChanges(player.getWorld());
+
+				String uniqueId = constructionReceipt.getUuid();
+				ItemStack receiptInBag = NbtHelper.getMathcingItemByUniqueId(uniqueId, player.getInventory());
+				NBTItem receiptInBagNbtItem = new NBTItem(receiptInBag);
+				receiptInBagNbtItem.setObject(plugin.getConstructionRecieptKey(), constructionReceipt);
+
+				NbtHelper.replaceUniqueNbtItemInInventory(player, receiptInBagNbtItem.getItem(), uniqueId,
+						player.getInventory());
+				
+				openInventory(player, constructionReceipt);
+			}
+
+			playerLastSymbolMap.remove(player.getName());
+
+			return;
+		}
+
+		BuildProcess buildProcess = new BuildProcess(plugin, constructionReceipt);
+
+		if (key.equals(MENU_ITEM_KEY_HIDE)) {
+			buildProcess.restoreOriginalBlocks(player.getWorld());
+			playerLastSymbolMap.remove(player.getName());
+		} else if (key.equals(MENU_ITEM_KEY_SHOW)) {
+			buildProcess.applyChanges(player.getWorld());
+			playerLastSymbolMap.remove(player.getName());
+		} else if (key.equals(MENU_ITEM_KEY_TELEPORT)) {
+			playerLastTeleportedMap.put(player.getName(), player.getLocation());
+			Location location = new Location(player.getWorld(), constructionReceipt.getPlayerX(),
+					constructionReceipt.getPlayerY(), constructionReceipt.getPlayerZ());
+
+			player.teleport(location);
+			playerLastSymbolMap.remove(player.getName());
+		} else if (key.equals(MENU_ITEM_KEY_RETURN)) {
+			Location location = playerLastTeleportedMap.get(player.getName());
+			player.teleport(location);
+			playerLastTeleportedMap.remove(player.getName());
+			playerLastSymbolMap.remove(player.getName());
+		} else if (key.equals(MENU_ITEM_KEY_SYMBOL)) {
+
+			NBTItem nbtItem = new NBTItem(clickedItem);
+			String symbol = nbtItem.getString(MENU_ITEM_KEY_SYMBOL_VALUE);
+			player.sendMessage("Click a block in your inventory to pick a new material for symbol group: " + symbol);
+			playerLastSymbolMap.put(player.getName(), symbol);
+		}
+
+	}
+	
+	private void openInventory(HumanEntity player, ConstructionReceipt constructionReceipt){
 		List<ItemStack> menuItems = new ArrayList<>();
 
 		menuItems.add(getMenuItem("Hide <", Material.BUCKET, MENU_ITEM_KEY_HIDE, null).getItem());
 		menuItems.add(getMenuItem("Show  > ", Material.WATER_BUCKET, MENU_ITEM_KEY_SHOW, null).getItem());
 
-		for (Character symbol : constructionReciept.getSymbolMap().keySet()) {
-			ComplexMaterial complexMaterial = constructionReciept.getSymbolMap().get(symbol);
+		menuItems.add(getMenuItem("Teleport", Material.COMPASS, MENU_ITEM_KEY_TELEPORT, null).getItem());
+
+		if (playerLastTeleportedMap.containsKey(player.getName())) {
+			menuItems.add(getMenuItem("Return", Material.BED, MENU_ITEM_KEY_RETURN, null).getItem());
+		}
+
+		for (Character symbol : constructionReceipt.getSymbolMap().keySet()) {
+			ComplexMaterial complexMaterial = constructionReceipt.getSymbolMap().get(symbol);
 			List<String> lore = Arrays.asList("Change material for symbol group " + symbol);
 			NBTItem menuItem = getMenuItem(null, complexMaterial, MENU_ITEM_KEY_SYMBOL, lore);
 			menuItem.setString(MENU_ITEM_KEY_SYMBOL_VALUE, symbol + "");
 			menuItems.add(menuItem.getItem());
 		}
 
-		int rows = (menuItems.size() / 9) + (menuItems.size() % 9 > 0 ? 1 : 0);
+		playerActiveReceiptMap.put(player.getName(), constructionReceipt);
+		playerLastSymbolMap.remove(player.getName());
+		openInventory(menuItems, player);
+	}
 
+	private void openInventory(List<ItemStack> menuItems, HumanEntity player) {
 		String constructionReceiptInventoryName = plugin
-				.getLocalizedMessage(LocalizedMessageEnum.CONSTRUCTION_RECEIPT.getKey(), event.getWhoClicked());
+				.getLocalizedMessage(LocalizedMessageEnum.CONSTRUCTION_RECEIPT.getKey(), player);
 
 		constructionReceiptInventoryName = InvisibleLoreHelper.convertToInvisibleString(
 				BLUEPRINTER_CONSTRUCTION_RECEIPT_INVIS_PREFIX) + ChatColor.RESET + constructionReceiptInventoryName;
+
+		int rows = (menuItems.size() / 9) + (menuItems.size() % 9 > 0 ? 1 : 0);
 
 		Inventory menuInventory = Bukkit.createInventory(null, rows * 9, constructionReceiptInventoryName);
 
@@ -132,9 +263,6 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 
 			}
 		}.runTaskLater(plugin, 1L);
-
-		event.setCancelled(true);
-		return;
 	}
 
 }

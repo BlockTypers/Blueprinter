@@ -14,10 +14,11 @@ recipes:
   - simple-fortress
   - simple-gazebo
   - simple-bunker
+  - construction-receipt
   
 recipes-settings.continuous-translation: true
 
-### SIMPLE COBLESTONE HAUSE ###
+### SIMPLE COBLESTONE HOUSE ###
 recipe.simple-cobblestone-house.name: Cobblestone House
 recipe.simple-cobblestone-house.de.name: Cobblestone Haus
 recipe.simple-cobblestone-house.locales:
@@ -130,6 +131,21 @@ recipe.simple-bunker.lore:
 recipe.simple-bunker.de.lore: 
   - Nach unten gebaut.
   - Blöcke werden ersetzt.
+  
+  
+### CONSTRUCTION RECEIPT ###
+recipe.construction-receipt.name: Construction Receipt
+recipe.construction-receipt.de.name: Bauempfang
+recipe.construction-receipt.locales:
+  - de
+recipe.construction-receipt.rows: 
+  - PPP
+  - PCP
+  - PPP
+recipe.construction-receipt.mats: 
+  - P=PAPER
+  - C=COBBLESTONE
+recipe.construction-receipt.output: PAPER
   
   
 

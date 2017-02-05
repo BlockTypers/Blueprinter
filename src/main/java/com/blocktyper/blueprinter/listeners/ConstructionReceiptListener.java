@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.blocktyper.blueprinter.BuildProcess;
-import com.blocktyper.blueprinter.data.ConstructionReciept;
+import com.blocktyper.blueprinter.data.ConstructionReceipt;
 
 public class ConstructionReceiptListener extends LayoutBaseListener {
 
@@ -36,7 +36,7 @@ public class ConstructionReceiptListener extends LayoutBaseListener {
 			}
 		}
 
-		ConstructionReciept constructionReciept = plugin.getConstructionReciept(itemInHand);
+		ConstructionReceipt constructionReciept = plugin.getConstructionReciept(itemInHand);
 
 		if (constructionReciept == null) {
 			plugin.debugInfo("No constructionReciept");
@@ -70,7 +70,7 @@ public class ConstructionReceiptListener extends LayoutBaseListener {
 			return;
 		}
 
-		BuildProcess buildProcess = new BuildProcess(plugin, constructionReciept, itemInHand);
+		BuildProcess buildProcess = new BuildProcess(plugin, constructionReciept);
 		if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
 			player.sendMessage("Undo");
 			buildProcess.restoreOriginalBlocks(player.getWorld());

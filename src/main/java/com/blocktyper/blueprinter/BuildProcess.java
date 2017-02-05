@@ -17,7 +17,7 @@ import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 
 import com.blocktyper.blueprinter.data.BlockChange;
-import com.blocktyper.blueprinter.data.ConstructionReciept;
+import com.blocktyper.blueprinter.data.ConstructionReceipt;
 import com.blocktyper.v1_1_8.helpers.BlockDefinition;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
 import com.blocktyper.v1_1_8.helpers.Coord;
@@ -26,17 +26,17 @@ import com.blocktyper.v1_1_8.helpers.IClickedBlockHelper.PlacementOrientation;
 public class BuildProcess {
 
 	private transient BlueprinterPlugin plugin;
-	private ConstructionReciept constructionReciept;
+	private ConstructionReceipt constructionReciept;
 
 	boolean initCalled = false;
 
 	public BuildProcess(BlueprinterPlugin plugin, Layout layout) {
 		this.plugin = plugin;
-		this.constructionReciept = new ConstructionReciept();
+		this.constructionReciept = new ConstructionReceipt();
 		this.constructionReciept.setLayout(layout);
 	}
 
-	public BuildProcess(BlueprinterPlugin plugin, ConstructionReciept constructionReciept, ItemStack item) {
+	public BuildProcess(BlueprinterPlugin plugin, ConstructionReceipt constructionReciept) {
 		this.plugin = plugin;
 		this.constructionReciept = constructionReciept;
 	}
@@ -58,7 +58,7 @@ public class BuildProcess {
 	}
 
 	@SuppressWarnings("deprecation")
-	public ConstructionReciept validateAndDoFirstBuild(HumanEntity player, Location location,
+	public ConstructionReceipt validateAndDoFirstBuild(HumanEntity player, Location location,
 			BlockState replacedBlockState) throws BuildException {
 
 		if (!initCalled) {
