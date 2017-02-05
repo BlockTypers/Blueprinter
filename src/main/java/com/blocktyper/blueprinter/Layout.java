@@ -12,10 +12,13 @@ import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 
+import com.blocktyper.v1_1_8.IBlockTyperPlugin;
 import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
 import com.blocktyper.v1_1_8.recipes.IRecipe;
 
 public class Layout {
+	
+	public String recipesKey;
 
 	private List<String> layerNumbers;
 
@@ -61,6 +64,16 @@ public class Layout {
 
 	public static final String SKIP_MATERIAL = "BLUEPRINTER_SKIP";
 	public static final String MATERIAL_DATA_SEPARATOR = "-";
+	
+	
+
+	public String getRecipesKey() {
+		return recipesKey;
+	}
+
+	public void setRecipesKey(String recipesKey) {
+		this.recipesKey = recipesKey;
+	}
 
 	public List<String> getLayerNumbers() {
 		return layerNumbers;
@@ -223,6 +236,7 @@ public class Layout {
 			}
 		}
 
+		layout.setRecipesKey(recipesKey);
 		layout.setMatMap(matMap);
 		layout.setMatDataMap(matDataMap);
 		layout.setLayerNumbers(
@@ -288,22 +302,31 @@ public class Layout {
 		return false;
 	}
 
-	List<String> getLocalizedLoreForPlugin(IRecipe recipe, HumanEntity player) {
+	List<String> getLocalizedLoreForPlugin(IRecipe recipe, HumanEntity player, IBlockTyperPlugin plugin) {
 		List<String> additionalLore = new ArrayList<>();
 
 		if (isRequireMatsInBag()) {
-			additionalLore.add("isRequireMatsInBag");
+			String loreLine = plugin.getLocalizedMessage(LocalizedMessageEnum.REQUIRE_MATS_IN_BAG.getKey(), player);
+			additionalLore.add(loreLine);
 		} else if (isRequireMatsLoaded()) {
-			additionalLore.add("isRequireMatsLoaded");
+			String loreLine = plugin.getLocalizedMessage(LocalizedMessageEnum.REQUIRE_MATS_LOADED.getKey(), player);
+			additionalLore.add(loreLine);
 		}
 
+		String loreLine = plugin.getLocalizedMessage(LocalizedMessageEnum.BUILD_DOWN.getKey(), player);
+		
 		if (isBuildDown()) {
-			additionalLore.add("isBuildDown");
+			additionalLore.add(loreLine);
 		}
 
+		loreLine = plugin.getLocalizedMessage(LocalizedMessageEnum.ALLOW_REPLACEMENT.getKey(), player);
+		
 		if (isAllowReplacement()) {
-			additionalLore.add("isAllowReplacement");
+			additionalLore.add(loreLine);
 		}
+		
+		loreLine = plugin.getLocalizedMessage(LocalizedMessageEnum.HEIGHT.getKey(), player);
+		
 		additionalLore.add("height: " + getLayerNumbers().size());
 
 		return additionalLore;

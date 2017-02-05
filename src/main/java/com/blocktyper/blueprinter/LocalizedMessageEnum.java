@@ -15,7 +15,12 @@ public enum LocalizedMessageEnum {
 	TELEPORT("blueprinter-teleport"),
 	HIDE("blueprinter-hide"),
 	SHOW("blueprinter-show"),
-	MISSING_WORLD("blueprinter-missing-world");
+	MISSING_WORLD("blueprinter-missing-world"),
+	REQUIRE_MATS_IN_BAG("blueprinter-require-mats-in-bag"),
+	REQUIRE_MATS_LOADED("blueprinter-require-mats-loaded"),
+	BUILD_DOWN("blueprinter-build-down"),
+	ALLOW_REPLACEMENT("blueprinter-allow-replacement"),
+	HEIGHT("blueprinter-height");
 
 	private String key;
 

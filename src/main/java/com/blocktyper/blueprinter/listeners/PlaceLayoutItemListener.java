@@ -49,14 +49,14 @@ public class PlaceLayoutItemListener extends LayoutBaseListener {
 					event.getBlockReplacedState());
 
 			if (constructionReceipt != null) {
-				ItemStack plansItem = recipeRegistrar().getItemFromRecipe("construction-receipt", player, null, null);
+				ItemStack constructionReceiptItem = recipeRegistrar().getItemFromRecipe("construction-receipt", player, null, null);
 
-				if (plansItem != null) {
+				if (constructionReceiptItem != null) {
 					String uuid = UUID.randomUUID().toString();
 					constructionReceipt.setUuid(uuid);
 					
-					String newDisplayName = plansItem.getItemMeta().getDisplayName() + " - " + itemInHand.getItemMeta().getDisplayName();
-					ItemMeta constructionReceiptMeta = plansItem.getItemMeta();
+					String newDisplayName = constructionReceiptItem.getItemMeta().getDisplayName();
+					ItemMeta constructionReceiptMeta = constructionReceiptItem.getItemMeta();
 					constructionReceiptMeta.setDisplayName(newDisplayName);
 					
 					List<String> lore = constructionReceiptMeta.getLore();
@@ -65,19 +65,22 @@ public class PlaceLayoutItemListener extends LayoutBaseListener {
 						lore = new ArrayList<>();
 					}
 					
-					String biome = location.getWorld().getBiome(location.getBlockX(), location.getBlockZ()).toString();
-					String locationMessage = Coord.getFormatted(player.getLocation(), true);
+					
+					String locationMessage = Coord.getFormatted(location, true);
 					lore.add(locationMessage);
-					lore.add(biome);
+					
+					lore.add(itemInHand.getItemMeta().getDisplayName());
+					
+					//String biome = location.getWorld().getBiome(location.getBlockX(), location.getBlockZ()).toString();
+					//lore.add(biome);
 					
 					constructionReceiptMeta.setLore(lore);
-					plansItem.setItemMeta(constructionReceiptMeta);
+					constructionReceiptItem.setItemMeta(constructionReceiptMeta);
 
-					NBTItem nbtItem = new NBTItem(plansItem);
+					NBTItem nbtItem = new NBTItem(constructionReceiptItem);
 					nbtItem.setObject(plugin.getConstructionRecieptKey(), constructionReceipt);
 					nbtItem.setString(IRecipe.NBT_BLOCKTYPER_UNIQUE_ID, uuid);
-
-					player.getInventory().setItemInOffHand(null);
+					
 					player.getWorld().dropItem(location, nbtItem.getItem());
 				}
 

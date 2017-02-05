@@ -316,6 +316,12 @@ messages.blueprinter-teleport.en: Teleport
 messages.blueprinter-hide.en: Hide
 messages.blueprinter-show.en: Show
 messages.blueprinter-missing-world.en: Missing world {0}
+messages.blueprinter-missing-world.en: Missing world {0}
+messages.blueprinter-require-mats-in-bag.en: Requires materials in bag
+messages.blueprinter-require-mats-loaded.en: Requires loaded materials
+messages.blueprinter-build-down.en: Builds down
+messages.blueprinter-allow-replacement.en: Replaces blocks
+messages.blueprinter-height.en: Height
 
 
 messages.block-typer-loading-recipes.de: Laden Rezepte
@@ -333,6 +339,11 @@ messages.blueprinter-teleport.de: Teleport
 messages.blueprinter-hide.de: Gebäude ausblenden
 messages.blueprinter-show.de: Gebäude anzeigen
 messages.blueprinter-missing-world.de: Fehlende Welt {0}
+blueprinter-require-mats-in-bag.de: Benötigt Material im Beutel
+messages.blueprinter-require-mats-loaded.de: Erfordert, dass Materialien geladen werden.
+messages.blueprinter-build-down.de: Baut nach unten
+messages.blueprinter-allow-replacement.de: Ersetzt Blöcke
+messages.blueprinter-height.de: Höhe
 
 
 

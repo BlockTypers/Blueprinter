@@ -163,6 +163,11 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		String key = getMenuItemKey(clickedItem);
 		if (key == null) {
 			if (playerLastSymbolMap.containsKey(player.getName())) {
+				
+				if(!clickedItem.getType().isBlock()){
+					return;
+				}
+				
 				String symbol = playerLastSymbolMap.get(player.getName());
 				playerLastSymbolMap.remove(player.getName());
 
@@ -243,7 +248,7 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 			NBTItem nbtItem = new NBTItem(clickedItem);
 			String symbol = nbtItem.getString(MENU_ITEM_KEY_SYMBOL_VALUE);
 			String materialSwapMessage = getLocalizedMessage(LocalizedMessageEnum.MATERIAL_SWAP.getKey(), player);
-			materialSwapMessage = new MessageFormat(materialSwapMessage).format(symbol);
+			materialSwapMessage = MessageFormat.format(materialSwapMessage, symbol);
 			player.sendMessage(materialSwapMessage);
 			playerLastSymbolMap.put(player.getName(), symbol);
 		}
@@ -254,7 +259,7 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		
 		String teleportMessage = getLocalizedMessage(LocalizedMessageEnum.TELEPORT.getKey(), player);
 		
-		String locationMessage = Coord.getFormatted(constructionReceipt.getPlayerX(), constructionReceipt.getPlayerY(), constructionReceipt.getPlayerZ(), constructionReceipt.getWorld());//MessageFormat.format(locationFormat, constructionReceipt.getWorld(), constructionReceipt.getPlayerX()+"", constructionReceipt.getPlayerY()+"", constructionReceipt.getPlayerZ()+"");
+		String locationMessage = Coord.getFormatted(constructionReceipt.getPlayerX(), constructionReceipt.getPlayerY(), constructionReceipt.getPlayerZ(), constructionReceipt.getWorld());
 		List<String> locationLore = Arrays.asList(locationMessage);
 		
 		menuItems.add(getMenuItem(teleportMessage, Material.COMPASS, MENU_ITEM_KEY_TELEPORT, locationLore).getItem());

@@ -18,6 +18,6 @@ public class RecipeWithLayout extends AbstractBlockTyperRecipe {
 
 	@Override
 	public List<String> getLocalizedLoreForPlugin(IRecipe recipe, HumanEntity player) {
-		return layout != null ? layout.getLocalizedLoreForPlugin(recipe, player) : null;
+		return layout != null ? layout.getLocalizedLoreForPlugin(recipe, player, plugin) : null;
 	}
 }
