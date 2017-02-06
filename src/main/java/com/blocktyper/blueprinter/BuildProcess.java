@@ -259,23 +259,27 @@ public class BuildProcess {
 											new Object[] { coords });
 								}
 							}
+							
+							
 
 							Map<Character, ComplexMaterial> symbolMap = constructionReciept.getSymbolMap();
 
+							Byte originalData = location.getBlock().getData();
 							Byte changeData = layout.getMatDataMap() != null ? layout.getMatDataMap().get(mat + "") : 0;
-							ComplexMaterial complexMaterial = new ComplexMaterial(material, changeData);
+							
+							ComplexMaterial fromComplexMaterial = isTriggerBlock ? replacedComplexMaterial
+									: new ComplexMaterial(location.getBlock().getType(), originalData);
+							
+							ComplexMaterial toComplexMaterial = new ComplexMaterial(material, changeData);
 
 							Coord coord = new Coord(location.getBlock());
 							if (!symbolMap.containsKey(mat)) {
-								symbolMap.put(mat, complexMaterial);
+								symbolMap.put(mat, toComplexMaterial);
 							}
 
-							Byte originalData = location.getBlock().getData();
-
 							BlockChange blockChange = new BlockChange();
-							blockChange.setTo(complexMaterial);
-							blockChange.setFrom(isTriggerBlock ? replacedComplexMaterial
-									: new ComplexMaterial(location.getBlock().getType(), originalData));
+							blockChange.setTo(fromComplexMaterial.getMaterial() == Material.BEDROCK ? fromComplexMaterial : toComplexMaterial);
+							blockChange.setFrom(fromComplexMaterial);
 							blockChange.setCoord(coord);
 							blockChange.setSymbol(mat);
 							constructionReciept.addChange(blockChange);
