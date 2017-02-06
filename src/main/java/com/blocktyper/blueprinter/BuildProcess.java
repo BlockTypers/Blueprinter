@@ -13,7 +13,10 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.blocktyper.blueprinter.data.BlockChange;
@@ -65,9 +68,18 @@ public class BuildProcess {
 			throw new BuildException("init must be called before every call to validateAndDoFirstBuild()");
 		}
 		initCalled = false;
+		
+		constructionReciept.setLayout(constructionReciept.getLayout());
+		constructionReciept.setX(location.getBlockX());
+		constructionReciept.setY(location.getBlockZ());
+		constructionReciept.setZ(location.getBlockY());
+		constructionReciept.setPlayerX(player.getLocation().getBlockX());
+		constructionReciept.setPlayerY(player.getLocation().getBlockY());
+		constructionReciept.setPlayerZ(player.getLocation().getBlockZ());
+		
 		constructionReciept.setReplacedComplexMaterial(
 				new ComplexMaterial(replacedBlockState.getType(), replacedBlockState.getRawData()));
-		
+
 		constructionReciept.setWorld(location.getWorld().getName());
 
 		validateMaterialAmounts(constructionReciept.getLayout(), player);
@@ -83,13 +95,7 @@ public class BuildProcess {
 
 		spendMaterialsInBag(constructionReciept.getLayout(), player);
 
-		constructionReciept.setLayout(constructionReciept.getLayout());
-		constructionReciept.setX(location.getBlockX());
-		constructionReciept.setY(location.getBlockZ());
-		constructionReciept.setZ(location.getBlockY());
-		constructionReciept.setPlayerX(player.getLocation().getBlockX());
-		constructionReciept.setPlayerY(player.getLocation().getBlockY());
-		constructionReciept.setPlayerZ(player.getLocation().getBlockZ());
+		
 
 		return constructionReciept;
 	}
@@ -108,7 +114,7 @@ public class BuildProcess {
 				Coord coord = change.getCoord();
 				if (blockMap.containsKey(coord) && blockMap.get(coord) != null) {
 					Block block = blockMap.get(coord);
-					setBlockType(change.getComplexMaterial(), block);
+					setBlockType(change.getComplexMaterial(), block, true);
 				}
 			}
 		}
@@ -127,7 +133,7 @@ public class BuildProcess {
 					continue;
 				}
 
-				if(alterToFromValues){
+				if (alterToFromValues) {
 					ComplexMaterial existingComplexMaterial = new ComplexMaterial(block.getType(), block.getData());
 					ComplexMaterial expectedExistingComplexMaterial = isTo ? change.getFrom() : change.getTo();
 
@@ -141,19 +147,53 @@ public class BuildProcess {
 						}
 					}
 				}
-				
 
 				ComplexMaterial newMaterial = isTo ? change.getTo() : change.getFrom();
-				setBlockType(newMaterial, block);
+				setBlockType(newMaterial, block, isTo);
 			}
 		}
 	}
 
 	@SuppressWarnings("deprecation")
-	private void setBlockType(ComplexMaterial complexMaterial, Block block) {
+	private void setBlockType(ComplexMaterial complexMaterial, Block block, boolean isTo) {
 		if (complexMaterial == null || block == null) {
 			return;
 		}
+
+		Location dropLocation = new Location(block.getWorld(), constructionReciept.getPlayerX(),
+				constructionReciept.getPlayerY(), constructionReciept.getPlayerZ());
+
+		if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+			Chest chest = (Chest) block.getState();
+			Inventory inventory = chest.getBlockInventory();
+			if (inventory != null && inventory.getContents() != null && inventory.getContents().length > 0) {
+				for (ItemStack itemInChest : inventory.getContents()) {
+					if (itemInChest == null || itemInChest.getType() == Material.AIR) {
+						continue;
+					}
+
+					block.getWorld().dropItemNaturally(dropLocation, itemInChest);
+				}
+				inventory.setContents(new ItemStack[0]);
+			}
+		} else if (block.getType() == Material.FURNACE) {
+			Furnace furnace = (Furnace) block.getState();
+			if (furnace.getInventory() != null) {
+				if (furnace.getInventory().getFuel() != null) {
+					block.getWorld().dropItemNaturally(dropLocation, furnace.getInventory().getFuel());
+					furnace.getInventory().setFuel(null);
+				}
+				if (furnace.getInventory().getSmelting() != null) {
+					block.getWorld().dropItemNaturally(dropLocation, furnace.getInventory().getSmelting());
+					furnace.getInventory().setSmelting(null);
+				}
+				if (furnace.getInventory().getResult() != null) {
+					block.getWorld().dropItemNaturally(dropLocation, furnace.getInventory().getResult());
+					furnace.getInventory().setResult(null);
+				}
+			}
+		}
+
 		block.setType(complexMaterial.getMaterial());
 		if (complexMaterial.getData() != null && !complexMaterial.getData().equals(0)) {
 			block.setData(complexMaterial.getData());

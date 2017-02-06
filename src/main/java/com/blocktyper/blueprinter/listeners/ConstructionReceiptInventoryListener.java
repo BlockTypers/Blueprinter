@@ -130,6 +130,10 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		}
 
 		ConstructionReceipt constructionReceipt = plugin.getConstructionReciept(clickedItem);
+		
+		if(constructionReceipt == null){
+			return;
+		}
 
 		openInventory(player, constructionReceipt);
 

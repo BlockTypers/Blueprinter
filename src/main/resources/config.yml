@@ -13,7 +13,7 @@ recipes:
   - simple-stone-house
   - simple-fortress
   - simple-gazebo
-  - simple-bunker
+  - simple-mineshaft
   - construction-receipt
   
 recipes-settings.continuous-translation: true
@@ -76,13 +76,6 @@ recipe.simple-fortress.mats:
   - W=WORKBENCH
   - H=CHEST
 recipe.simple-fortress.output: WORKBENCH
-recipe.simple-fortress.lore:
-  - This building spends the required 
-  - materials from your bag.
-recipe.simple-fortress.de.lore:
-  - Dieses Gebäude verbringt die 
-  - benätigten Materialien 
-  - aus deine Tasche.
   
   
 ### SIMPLE GAZEBO ###
@@ -101,36 +94,26 @@ recipe.simple-gazebo.mats:
   - W=WORKBENCH
   - H=CHEST
 recipe.simple-gazebo.output: WORKBENCH
-recipe.simple-gazebo.lore: 
-  - Avoids replacing blocks 
-  - when possible.
-recipe.simple-gazebo.de.lore: 
-  - Vermeidet das Ersetzen von 
-  - Blöcken, wenn möglich.
   
   
-### SIMPLE BUNKER ###
-recipe.simple-bunker.name: Bunker
-recipe.simple-bunker.de.name: Bunker
-recipe.simple-bunker.locales: 
+### SIMPLE MINE SHAFT ###
+recipe.simple-mineshaft.name: Mine shaft
+recipe.simple-mineshaft.de.name: Bergbauschacht
+recipe.simple-mineshaft.locales: 
   - de
-recipe.simple-bunker.rows: 
-  - CCC
-  - DTD
-  - GWG
-recipe.simple-bunker.mats: 
-  - C=COBBLESTONE
+recipe.simple-mineshaft.rows: 
+  - CBC
+  - GTG
+  - FWH
+recipe.simple-mineshaft.mats: 
+  - B=WATER_BUCKET
+  - C=GLASS
   - G=GLOWSTONE
   - W=WORKBENCH
-  - D=DIRT
+  - F=FURNACE
+  - H=CHEST
   - T=TNT
-recipe.simple-bunker.output: WORKBENCH
-recipe.simple-bunker.lore: 
-  - Built downwards.
-  - Blocks will be replaced
-recipe.simple-bunker.de.lore: 
-  - Nach unten gebaut.
-  - Blöcke werden ersetzt.
+recipe.simple-mineshaft.output: WORKBENCH
   
   
 ### CONSTRUCTION RECEIPT ###
@@ -174,10 +157,10 @@ structures.simple-gazebo.layout: simple
 structures.simple-gazebo.mats: simple-gazebo
 structures.simple-gazebo.allow-replacement: true
 
-structures.simple-bunker.layout: simple
-structures.simple-bunker.mats: simple-bunker
-structures.simple-bunker.allow-replacement: true
-structures.simple-bunker.build-down: true
+structures.simple-mineshaft.layout: simple
+structures.simple-mineshaft.mats: simple-mineshaft
+structures.simple-mineshaft.allow-replacement: true
+structures.simple-mineshaft.build-down: true
 
 
 structures.simple-fortress.layout: simple
@@ -193,6 +176,9 @@ mats.simple-cobblestone.F: FURNACE
 mats.simple-cobblestone.W: WORKBENCH
 mats.simple-cobblestone.H: CHEST
 mats.simple-cobblestone.A: AIR
+mats.simple-cobblestone.T: STONE-2
+mats.simple-cobblestone.M: STONE-2
+mats.simple-cobblestone.O: STONE-6
 
 mats.simple-stone.C: STONE
 mats.simple-stone.L: LOG
@@ -200,6 +186,10 @@ mats.simple-stone.F: FURNACE
 mats.simple-stone.W: WORKBENCH
 mats.simple-stone.H: CHEST
 mats.simple-stone.A: AIR
+mats.simple-stone.T: STONE
+mats.simple-stone.M: STONE-2
+mats.simple-stone.O: STONE-6
+
 
 mats.simple-fortress.C: OBSIDIAN
 mats.simple-fortress.L: OBSIDIAN
@@ -207,20 +197,29 @@ mats.simple-fortress.F: FURNACE
 mats.simple-fortress.W: WORKBENCH
 mats.simple-fortress.H: CHEST
 mats.simple-fortress.A: AIR
+mats.simple-fortress.T: OBSIDIAN
+mats.simple-fortress.M: OBSIDIAN
+mats.simple-fortress.O: OBSIDIAN
 
-mats.simple-gazebo.C: STONE-1
+mats.simple-gazebo.C: STONE-2
 mats.simple-gazebo.L: BLUEPRINTER_SKIP
 mats.simple-gazebo.F: FURNACE
 mats.simple-gazebo.W: WORKBENCH
 mats.simple-gazebo.H: CHEST
 mats.simple-gazebo.A: BLUEPRINTER_SKIP
+mats.simple-gazebo.T: GLASS
+mats.simple-gazebo.M: STONE-4
+mats.simple-gazebo.O: STONE-6
 
-mats.simple-bunker.C: COBBLESTONE
-mats.simple-bunker.L: DIRT
-mats.simple-bunker.F: GLOWSTONE
-mats.simple-bunker.W: WORKBENCH
-mats.simple-bunker.H: GLOWSTONE
-mats.simple-bunker.A: AIR
+mats.simple-mineshaft.C: GLASS
+mats.simple-mineshaft.L: GLASS
+mats.simple-mineshaft.F: FURNACE
+mats.simple-mineshaft.W: WORKBENCH
+mats.simple-mineshaft.H: CHEST
+mats.simple-mineshaft.A: AIR
+mats.simple-mineshaft.T: GLASS
+mats.simple-mineshaft.M: GLOWSTONE
+mats.simple-mineshaft.O: WATER
 
 ########################
 ## SYMBOLS AND FLOORS ##
@@ -234,6 +233,9 @@ layouts.simple.symbols:
   - W
   - H
   - A
+  - T
+  - M
+  - O
   
 layouts.simple.layers: 
   - L1
@@ -246,50 +248,56 @@ layouts.simple.layers:
   
 layouts.simple.layer.L1.rows: 
   - R1
+  - R2
+  - R3
+  - R4
+  - R3
+  - R2
   - R1
-  - R1
-  - R1
-  - R1
-  - R1
-  - R1
-layouts.simple.layer.L1.row.R1: CCCCCCC
+layouts.simple.layer.L1.row.R1: CTCCCTC
+layouts.simple.layer.L1.row.R2: TCCCCCT
+layouts.simple.layer.L1.row.R3: CCMMMCC
+layouts.simple.layer.L1.row.R4: CCMOMCC
 
 layouts.simple.layer.L2.rows: 
   - R1
   - R2
-  - R2
-  - R2
-  - R2
+  - R3
+  - R3
   - R3
   - R4
-layouts.simple.layer.L2.row.R1: CLLALLC
-layouts.simple.layer.L2.row.R2: LAAAAAL
-layouts.simple.layer.L2.row.R3: LAHWFAL
-layouts.simple.layer.L2.row.R4: CLLLLLC
+  - R5
+layouts.simple.layer.L2.row.R1: CTLALTC
+layouts.simple.layer.L2.row.R2: TAAAAAT
+layouts.simple.layer.L2.row.R3: LAAAAAL
+layouts.simple.layer.L2.row.R4: TAHWFAT
+layouts.simple.layer.L2.row.R5: CTLLLTC
 
 layouts.simple.layer.L3.rows: 
   - R1
   - R2
-  - R2
+  - R3
+  - R4
   - R3
   - R2
-  - R2
-  - R4
-layouts.simple.layer.L3.row.R1: CLLALLC
-layouts.simple.layer.L3.row.R2: LAAAAAL
-layouts.simple.layer.L3.row.R3: AAAAAAA
-layouts.simple.layer.L3.row.R4: CLLALLC
+  - R5
+layouts.simple.layer.L3.row.R1: CTLALTC
+layouts.simple.layer.L3.row.R2: TAAAAAT
+layouts.simple.layer.L3.row.R3: LAAAAAL
+layouts.simple.layer.L3.row.R4: AAAAAAA
+layouts.simple.layer.L3.row.R5: CTLALTC
 
 layouts.simple.layer.L4.rows: 
   - R1
   - R2
-  - R2
-  - R2
-  - R2
+  - R3
+  - R3
+  - R3
   - R2
   - R1
-layouts.simple.layer.L4.row.R1: CLLLLLC
-layouts.simple.layer.L4.row.R2: LAAAAAL
+layouts.simple.layer.L4.row.R1: CTLLLTC
+layouts.simple.layer.L4.row.R2: TAAAAAT
+layouts.simple.layer.L4.row.R3: LAAAAAL
 
 ##ADD SYMBOLS AND FLOORS FOR YOUR NEW LAYOUT BELOW
 

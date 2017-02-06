@@ -327,7 +327,7 @@ public class Layout {
 		
 		loreLine = plugin.getLocalizedMessage(LocalizedMessageEnum.HEIGHT.getKey(), player);
 		
-		additionalLore.add("height: " + getLayerNumbers().size());
+		additionalLore.add(loreLine + ": " + getLayerNumbers().size());
 
 		return additionalLore;
 	}

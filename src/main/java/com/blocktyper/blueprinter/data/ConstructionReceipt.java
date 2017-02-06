@@ -80,8 +80,7 @@ public class ConstructionReceipt {
 	public void setPlayerZ(int playerZ) {
 		this.playerZ = playerZ;
 	}
-	
-	
+
 	public String getWorld() {
 		return world;
 	}
@@ -136,9 +135,4 @@ public class ConstructionReceipt {
 	public void setShowing(boolean showing) {
 		this.showing = showing;
 	}
-	
-	
-	
-	
-
 }
