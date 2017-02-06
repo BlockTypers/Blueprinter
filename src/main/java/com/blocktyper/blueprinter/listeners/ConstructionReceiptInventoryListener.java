@@ -177,9 +177,9 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 
 				Character symbolAsChar = null;
 				Byte data = clickedItem.getData() != null ? clickedItem.getData().getData() : null;
+				
 				ComplexMaterial changeToMaterial = new ComplexMaterial(clickedItem.getType(), data);
 				
-
 				for (BlockChange change : constructionReceipt.getChanges()) {
 					if (symbol.equals(change.getSymbol() + "")) {
 						symbolAsChar = change.getSymbol();
@@ -193,6 +193,8 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 							if(expectedMaterial.equals(existingMaterial)){
 								change.setTo(changeToMaterial);
 							}else{
+								plugin.info("expectedMaterial " + expectedMaterial);
+								plugin.info("existingMaterial " + existingMaterial);
 								change.setTo(existingMaterial);
 							}
 						}

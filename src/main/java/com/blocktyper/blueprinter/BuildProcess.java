@@ -358,14 +358,15 @@ public class BuildProcess {
 			return;
 		}
 
-		for (ComplexMaterial complexMaterial : layout.getRequirements().keySet()) {
-			int amountRequired = layout.getRequirements().get(complexMaterial);
+		for (String complexMaterialString : layout.getRequirements().keySet()) {
+			ComplexMaterial complexMaterial = ComplexMaterial.fromString(complexMaterialString);
+			int amountRequired = layout.getRequirements().get(complexMaterialString);
 			int amountFound = 0;
 			if (layout.isRequireMatsInBag()) {
 				amountFound = getAmountOfMaterialInBag(player, complexMaterial);
 			} else if (layout.isRequireMatsLoaded()) {
-				amountFound = layout.getSupplies() != null && layout.getSupplies().containsKey(complexMaterial)
-						? layout.getSupplies().get(complexMaterial) : 0;
+				amountFound = layout.getSupplies() != null && layout.getSupplies().containsKey(complexMaterialString)
+						? layout.getSupplies().get(complexMaterialString) : 0;
 			}
 			if (amountFound < amountRequired) {
 				String missingRequiredMaterials = LocalizedMessageEnum.MISSING_REQUIRED_MATERIALS.getKey();
@@ -387,7 +388,16 @@ public class BuildProcess {
 		if (!layout.isRequireMatsInBag()) {
 			return;
 		}
-		plugin.getPlayerHelper().spendMaterialsInBag(layout.getRequirements(), player);
+		
+		Map<ComplexMaterial, Integer> requirements = new HashMap<>();
+		if(layout.getRequirements() != null){
+			for(String key : layout.getRequirements().keySet()){
+				ComplexMaterial complexMaterial = ComplexMaterial.fromString(key);
+				requirements.put(complexMaterial, layout.getRequirements().get(key));
+			}
+		}
+		
+		plugin.getPlayerHelper().spendMaterialsInBag(requirements, player);
 	}
 
 	// GETTERS AND SETTERS

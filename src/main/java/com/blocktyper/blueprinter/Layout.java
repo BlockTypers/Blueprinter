@@ -38,9 +38,9 @@ public class Layout {
 
 	private boolean requireMatsInBag;
 
-	private Map<ComplexMaterial, Integer> requirements;
+	private Map<String, Integer> requirements;
 
-	private Map<ComplexMaterial, Integer> supplies;
+	private Map<String, Integer> supplies;
 
 	private static final Set<Material> NON_REQUIRED_MATERIALS = new HashSet<>(
 			Arrays.asList(Material.AIR, Material.STATIONARY_LAVA, Material.STATIONARY_WATER, Material.WATER));
@@ -131,19 +131,19 @@ public class Layout {
 		this.requireMatsLoaded = requireMatsLoaded;
 	}
 
-	public Map<ComplexMaterial, Integer> getRequirements() {
+	public Map<String, Integer> getRequirements() {
 		return requirements;
 	}
 
-	public void setRequirements(Map<ComplexMaterial, Integer> requirements) {
+	public void setRequirements(Map<String, Integer> requirements) {
 		this.requirements = requirements;
 	}
 
-	public Map<ComplexMaterial, Integer> getSupplies() {
+	public Map<String, Integer> getSupplies() {
 		return supplies;
 	}
 
-	public void setSupplies(Map<ComplexMaterial, Integer> supplies) {
+	public void setSupplies(Map<String, Integer> supplies) {
 		this.supplies = supplies;
 	}
 
@@ -273,12 +273,13 @@ public class Layout {
 					if (material != null) {
 						Byte data = layout.getMatDataMap().get(mat + "");
 						ComplexMaterial complexMaterial = new ComplexMaterial(material, data);
+						String matKey = complexMaterial.toString();
 						if (layout.requireMats()) {
-							if (!NON_REQUIRED_MATERIALS.contains(complexMaterial)) {
-								if (!layout.getRequirements().containsKey(complexMaterial)) {
-									layout.getRequirements().put(complexMaterial, 1);
+							if (!NON_REQUIRED_MATERIALS.contains(material)) {
+								if (!layout.getRequirements().containsKey(matKey)) {
+									layout.getRequirements().put(matKey, 1);
 								} else {
-									layout.getRequirements().put(complexMaterial, layout.getRequirements().get(complexMaterial) + 1);
+									layout.getRequirements().put(matKey, layout.getRequirements().get(matKey) + 1);
 								}
 							}
 						}

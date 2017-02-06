@@ -15,10 +15,8 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import com.blocktyper.blueprinter.Layout;
@@ -82,11 +80,13 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				Byte cursorData = cursor.getData() != null ? cursor.getData().getData() : null;
 				ComplexMaterial complexMaterial = new ComplexMaterial(cursor.getType(), cursorData);
 
-				if (!layout.getRequirements().containsKey(complexMaterial)) {
+				String matKey = complexMaterial.toString();
+
+				if (!layout.getRequirements().containsKey(matKey)) {
 					return;
 				}
 
-				int requiredAmount = layout.getRequirements().get(complexMaterial);
+				int requiredAmount = layout.getRequirements().get(matKey);
 
 				if (requiredAmount < 1) {
 					return;
@@ -96,11 +96,11 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 					layout.setSupplies(new HashMap<>());
 				}
 
-				if (!layout.getSupplies().containsKey(complexMaterial)) {
-					layout.getSupplies().put(complexMaterial, 0);
+				if (!layout.getSupplies().containsKey(matKey)) {
+					layout.getSupplies().put(matKey, 0);
 				}
 
-				Integer amountLoaded = layout.getSupplies().get(complexMaterial);
+				Integer amountLoaded = layout.getSupplies().get(matKey);
 				amountLoaded = amountLoaded != null ? amountLoaded : 0;
 
 				int amountLeft = requiredAmount - amountLoaded;
@@ -119,7 +119,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 					player.setItemOnCursor(cursor);
 				}
 
-				layout.getSupplies().put(complexMaterial, amountLoaded);
+				layout.getSupplies().put(matKey, amountLoaded);
 
 				item = plugin.setLayout(item, layout);
 
@@ -128,18 +128,17 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 				return;
 			} else if (event.getClick().equals(ClickType.RIGHT)) {
 				List<ItemStack> requiredItems = new ArrayList<>();
-				for (ComplexMaterial complexMaterial : layout.getRequirements().keySet()) {
-					int requiredAmount = layout.getRequirements().get(complexMaterial);
+				for (String complexMaterialString : layout.getRequirements().keySet()) {
+					ComplexMaterial complexMaterial = ComplexMaterial.fromString(complexMaterialString);
+					int requiredAmount = layout.getRequirements().get(complexMaterialString);
 
 					Integer amountObtained = getAmountObtained(player, layout, complexMaterial);
 
 					amountObtained = amountObtained != null ? amountObtained : 0;
-					ItemStack requiredItem = new ItemStack(complexMaterial.getMaterial());
+					short damage = 1;
+					ItemStack requiredItem = new ItemStack(complexMaterial.getMaterial(), 1, damage,
+							complexMaterial.getData());
 					ItemMeta itemMeta = requiredItem.getItemMeta();
-					MaterialData materialData = requiredItem.getData();
-					materialData = materialData != null ? materialData
-							: new MaterialData(complexMaterial.getMaterial(), complexMaterial.getData());
-					requiredItem.setData(materialData);
 
 					if (itemMeta != null) {
 						List<String> lore = Arrays.asList(amountObtained + "/" + requiredAmount);
@@ -148,7 +147,6 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 					}
 
 					if (requiredAmount <= amountObtained) {
-						itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 						requiredItem.addUnsafeEnchantment(Enchantment.LUCK, 1);
 						requiredItem.setItemMeta(itemMeta);
 					}
@@ -186,9 +184,11 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 	private Integer getAmountObtained(Player player, Layout layout, ComplexMaterial complexMaterial) {
 		Integer amountObtained = null;
 
+		String matKey = complexMaterial.toString();
+
 		if (layout.isRequireMatsLoaded()) {
-			amountObtained = layout.getSupplies() != null && layout.getSupplies().get(complexMaterial) != null
-					? layout.getSupplies().get(complexMaterial) : 0;
+			amountObtained = layout.getSupplies() != null && layout.getSupplies().get(matKey) != null
+					? layout.getSupplies().get(matKey) : 0;
 		} else {
 			amountObtained = getPlayerHelper().getAmountOfMaterialInBag(player, complexMaterial, false);
 		}
