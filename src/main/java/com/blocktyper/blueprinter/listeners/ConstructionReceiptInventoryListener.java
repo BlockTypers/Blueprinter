@@ -193,8 +193,6 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 							if(expectedMaterial.equals(existingMaterial)){
 								change.setTo(changeToMaterial);
 							}else{
-								plugin.info("expectedMaterial " + expectedMaterial);
-								plugin.info("existingMaterial " + existingMaterial);
 								change.setTo(existingMaterial);
 							}
 						}
@@ -204,7 +202,7 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 				constructionReceipt.getSymbolMap().put(symbolAsChar, changeToMaterial);
 
 				BuildProcess buildProcess = new BuildProcess(plugin, constructionReceipt);
-				buildProcess.applyChanges(player.getWorld(), false);
+				buildProcess.applyChanges(player.getWorld(), false, symbolAsChar);
 
 				resaveConstructionReceipt(constructionReceipt, player);
 
@@ -222,7 +220,7 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 			resaveConstructionReceipt(constructionReceipt, player);
 			openInventory(player, constructionReceipt);
 		} else if (key.equals(MENU_ITEM_KEY_SHOW)) {
-			buildProcess.applyChanges(player.getWorld(), true);
+			buildProcess.applyChanges(player.getWorld(), true, null);
 			playerLastSymbolMap.remove(player.getName());
 			resaveConstructionReceipt(constructionReceipt, player);
 			openInventory(player, constructionReceipt);

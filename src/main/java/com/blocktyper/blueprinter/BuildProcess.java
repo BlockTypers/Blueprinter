@@ -101,11 +101,11 @@ public class BuildProcess {
 	}
 
 	public void restoreOriginalBlocks(World world) {
-		alterBlocks(false, world, true);
+		alterBlocks(false, world, true, null);
 	}
 
-	public void applyChanges(World world, boolean alterToFromValues) {
-		alterBlocks(true, world, alterToFromValues);
+	public void applyChanges(World world, boolean alterToFromValues, Character symbol) {
+		alterBlocks(true, world, alterToFromValues, symbol);
 	}
 
 	private void alterBlocks(List<BlockDefinition> changes, Map<Coord, Block> blockMap) {
@@ -121,10 +121,15 @@ public class BuildProcess {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void alterBlocks(boolean isTo, World world, boolean alterToFromValues) {
+	private void alterBlocks(boolean isTo, World world, boolean alterToFromValues, Character symbol) {
 		if (world != null) {
 			constructionReciept.setShowing(isTo);
 			for (BlockChange change : constructionReciept.getChanges()) {
+				
+				if(symbol != null && !symbol.equals(change.getSymbol())){
+					continue;
+				}
+				
 				Coord coord = change.getCoord();
 
 				Block block = world.getBlockAt(new Location(world, coord.getX(), coord.getY(), coord.getZ()));
