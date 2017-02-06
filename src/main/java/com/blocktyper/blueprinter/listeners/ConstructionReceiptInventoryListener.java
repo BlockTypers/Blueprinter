@@ -157,6 +157,10 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		ItemStack clickedItem = event.getCurrentItem();
 
 		HumanEntity player = event.getWhoClicked();
+		
+		if(!player.isOp()){
+			return;
+		}
 
 		if (clickedItem == null || clickedItem.getType() == Material.AIR) {
 			return;
