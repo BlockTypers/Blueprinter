@@ -97,7 +97,7 @@ recipe.simple-gazebo.output: WORKBENCH
   
   
 ### SIMPLE MINE SHAFT ###
-recipe.simple-mineshaft.name: Mine shaft
+recipe.simple-mineshaft.name: Mineshaft
 recipe.simple-mineshaft.de.name: Bergbauschacht
 recipe.simple-mineshaft.locales: 
   - de
