@@ -52,13 +52,6 @@ recipe.simple-stone-house.mats:
   - W=WORKBENCH
   - H=CHEST
 recipe.simple-stone-house.output: WORKBENCH
-recipe.simple-stone-house.lore:
-  - Requires Materials to be 
-  - loaded before placing.
-recipe.simple-stone-house.de.lore:
-  - Dieses Gebäude erfordert, 
-  - dass die Materialien zuerst 
-  - geladen werden.
 
 
 ### SIMPLE FORTRESS ###
