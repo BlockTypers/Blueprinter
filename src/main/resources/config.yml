@@ -340,7 +340,7 @@ messages.blueprinter-teleport.de: Teleport
 messages.blueprinter-hide.de: Gebäude ausblenden
 messages.blueprinter-show.de: Gebäude anzeigen
 messages.blueprinter-missing-world.de: Fehlende Welt {0}
-blueprinter-require-mats-in-bag.de: Benötigt Material im Beutel
+messages.blueprinter-require-mats-in-bag.de: Benötigt Material im Beutel
 messages.blueprinter-require-mats-loaded.de: Erfordert, dass Materialien geladen werden.
 messages.blueprinter-build-down.de: Baut nach unten
 messages.blueprinter-allow-replacement.de: Ersetzt Blöcke
