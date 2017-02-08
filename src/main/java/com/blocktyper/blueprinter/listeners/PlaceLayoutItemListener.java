@@ -17,9 +17,9 @@ import com.blocktyper.blueprinter.BuildException;
 import com.blocktyper.blueprinter.BuildProcess;
 import com.blocktyper.blueprinter.Layout;
 import com.blocktyper.blueprinter.data.ConstructionReceipt;
-import com.blocktyper.v1_1_8.helpers.Coord;
-import com.blocktyper.v1_1_8.nbt.NBTItem;
-import com.blocktyper.v1_1_8.recipes.IRecipe;
+import com.blocktyper.v1_2_0.helpers.Coord;
+import com.blocktyper.v1_2_0.nbt.NBTItem;
+import com.blocktyper.v1_2_0.recipes.IRecipe;
 
 public class PlaceLayoutItemListener extends LayoutBaseListener {
 

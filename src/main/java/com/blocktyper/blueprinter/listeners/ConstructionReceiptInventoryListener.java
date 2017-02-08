@@ -29,11 +29,11 @@ import com.blocktyper.blueprinter.BuildProcess;
 import com.blocktyper.blueprinter.LocalizedMessageEnum;
 import com.blocktyper.blueprinter.data.BlockChange;
 import com.blocktyper.blueprinter.data.ConstructionReceipt;
-import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
-import com.blocktyper.v1_1_8.helpers.Coord;
-import com.blocktyper.v1_1_8.helpers.InvisibleLoreHelper;
-import com.blocktyper.v1_1_8.nbt.NBTItem;
-import com.blocktyper.v1_1_8.nbt.NbtHelper;
+import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_0.helpers.Coord;
+import com.blocktyper.v1_2_0.helpers.InvisibleLoreHelper;
+import com.blocktyper.v1_2_0.nbt.NBTItem;
+import com.blocktyper.v1_2_0.nbt.NbtHelper;
 
 public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 

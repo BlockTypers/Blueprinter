@@ -1,7 +1,7 @@
 package com.blocktyper.blueprinter.data;
 
-import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
-import com.blocktyper.v1_1_8.helpers.Coord;
+import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_0.helpers.Coord;
 
 public class BlockChange {
 	private Coord coord;

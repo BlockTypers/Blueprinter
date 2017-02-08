@@ -21,8 +21,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.blocktyper.blueprinter.Layout;
 import com.blocktyper.blueprinter.LocalizedMessageEnum;
-import com.blocktyper.v1_1_8.helpers.ComplexMaterial;
-import com.blocktyper.v1_1_8.helpers.InvisibleLoreHelper;
+import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_0.helpers.InvisibleLoreHelper;
 
 public class RequireMatsClickListener extends LayoutBaseListener {
 
