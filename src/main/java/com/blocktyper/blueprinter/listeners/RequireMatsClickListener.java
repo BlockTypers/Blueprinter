@@ -21,8 +21,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import com.blocktyper.blueprinter.Layout;
 import com.blocktyper.blueprinter.LocalizedMessageEnum;
-import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
-import com.blocktyper.v1_2_0.helpers.InvisibleLoreHelper;
+import com.blocktyper.v1_2_6.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_6.helpers.InvisHelper;
 
 public class RequireMatsClickListener extends LayoutBaseListener {
 
@@ -45,7 +45,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 
 		if (event.getInventory() != null && event.getInventory().getName() != null) {
 			String inventoryName = event.getInventory().getName();
-			inventoryName = InvisibleLoreHelper.convertToVisibleString(inventoryName);
+			inventoryName = InvisHelper.convertToVisibleString(inventoryName);
 			if (inventoryName.startsWith(REQUIRED_MATS_INVIS_PREFIX)) {
 				event.setCancelled(true);
 				return;
@@ -157,7 +157,7 @@ public class RequireMatsClickListener extends LayoutBaseListener {
 
 				String inventoryName = getLocalizedMessage(LocalizedMessageEnum.REQUIRED_MATERIALS.getKey(),
 						event.getWhoClicked());
-				inventoryName = InvisibleLoreHelper.convertToInvisibleString(REQUIRED_MATS_INVIS_PREFIX)
+				inventoryName = InvisHelper.convertToInvisibleString(REQUIRED_MATS_INVIS_PREFIX)
 						+ ChatColor.RESET + inventoryName;
 
 				Inventory requiredMaterialsInventory = Bukkit.createInventory(null, rows * 9, inventoryName);

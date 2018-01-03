@@ -29,11 +29,11 @@ import com.blocktyper.blueprinter.BuildProcess;
 import com.blocktyper.blueprinter.LocalizedMessageEnum;
 import com.blocktyper.blueprinter.data.BlockChange;
 import com.blocktyper.blueprinter.data.ConstructionReceipt;
-import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
-import com.blocktyper.v1_2_0.helpers.Coord;
-import com.blocktyper.v1_2_0.helpers.InvisibleLoreHelper;
-import com.blocktyper.v1_2_0.nbt.NBTItem;
-import com.blocktyper.v1_2_0.nbt.NbtHelper;
+import com.blocktyper.v1_2_6.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_6.helpers.Coord;
+import com.blocktyper.v1_2_6.helpers.InvisHelper;
+import com.blocktyper.v1_2_6.nbt.NBTItem;
+import com.blocktyper.v1_2_6.nbt.NbtHelper;
 
 public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 
@@ -105,7 +105,7 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 
 		if (event.getInventory() != null && event.getInventory().getName() != null) {
 			String inventoryName = event.getInventory().getName();
-			inventoryName = InvisibleLoreHelper.convertToVisibleString(inventoryName);
+			inventoryName = InvisHelper.convertToVisibleString(inventoryName);
 			if (inventoryName.startsWith(BLUEPRINTER_CONSTRUCTION_RECEIPT_INVIS_PREFIX)) {
 				event.setCancelled(true);
 				handleMenuClick(event);
@@ -318,7 +318,7 @@ public class ConstructionReceiptInventoryListener extends LayoutBaseListener {
 		String constructionReceiptInventoryName = plugin
 				.getLocalizedMessage(LocalizedMessageEnum.CONSTRUCTION_RECEIPT.getKey(), player);
 
-		constructionReceiptInventoryName = InvisibleLoreHelper.convertToInvisibleString(
+		constructionReceiptInventoryName = InvisHelper.convertToInvisibleString(
 				BLUEPRINTER_CONSTRUCTION_RECEIPT_INVIS_PREFIX) + ChatColor.RESET + constructionReceiptInventoryName;
 
 		int rows = (menuItems.size() / 9) + (menuItems.size() % 9 > 0 ? 1 : 0);

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.blocktyper.blueprinter.Layout;
-import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_6.helpers.ComplexMaterial;
 
 public class ConstructionReceipt {
 	Layout layout;

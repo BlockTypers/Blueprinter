@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.bukkit.entity.HumanEntity;
 
-import com.blocktyper.v1_2_0.recipes.AbstractBlockTyperRecipe;
-import com.blocktyper.v1_2_0.recipes.IRecipe;
+import com.blocktyper.v1_2_6.recipes.AbstractBlockTyperRecipe;
+import com.blocktyper.v1_2_6.recipes.IRecipe;
 
 public class RecipeWithLayout extends AbstractBlockTyperRecipe {
 

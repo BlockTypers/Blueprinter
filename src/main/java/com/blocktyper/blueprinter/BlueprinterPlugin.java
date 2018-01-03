@@ -13,9 +13,9 @@ import com.blocktyper.blueprinter.data.ConstructionReceipt;
 import com.blocktyper.blueprinter.listeners.ConstructionReceiptInventoryListener;
 import com.blocktyper.blueprinter.listeners.PlaceLayoutItemListener;
 import com.blocktyper.blueprinter.listeners.RequireMatsClickListener;
-import com.blocktyper.v1_2_0.BlockTyperBasePlugin;
-import com.blocktyper.v1_2_0.nbt.NBTItem;
-import com.blocktyper.v1_2_0.recipes.IRecipe;
+import com.blocktyper.v1_2_6.BlockTyperBasePlugin;
+import com.blocktyper.v1_2_6.nbt.NBTItem;
+import com.blocktyper.v1_2_6.recipes.IRecipe;
 
 public class BlueprinterPlugin extends BlockTyperBasePlugin {
 

@@ -12,9 +12,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 
-import com.blocktyper.v1_2_0.IBlockTyperPlugin;
-import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
-import com.blocktyper.v1_2_0.recipes.IRecipe;
+import com.blocktyper.v1_2_6.IBlockTyperPlugin;
+import com.blocktyper.v1_2_6.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_6.recipes.IRecipe;
 
 public class Layout {
 	

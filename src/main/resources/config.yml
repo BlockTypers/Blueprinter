@@ -82,7 +82,6 @@ recipe.simple-gazebo.rows:
   - GGG
 recipe.simple-gazebo.mats: 
   - G=STONE-1
-  - A=AIR
   - F=FURNACE
   - W=WORKBENCH
   - H=CHEST

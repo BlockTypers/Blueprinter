@@ -21,10 +21,10 @@ import org.bukkit.inventory.ItemStack;
 
 import com.blocktyper.blueprinter.data.BlockChange;
 import com.blocktyper.blueprinter.data.ConstructionReceipt;
-import com.blocktyper.v1_2_0.helpers.BlockDefinition;
-import com.blocktyper.v1_2_0.helpers.ComplexMaterial;
-import com.blocktyper.v1_2_0.helpers.Coord;
-import com.blocktyper.v1_2_0.helpers.IClickedBlockHelper.PlacementOrientation;
+import com.blocktyper.v1_2_6.helpers.BlockDefinition;
+import com.blocktyper.v1_2_6.helpers.ComplexMaterial;
+import com.blocktyper.v1_2_6.helpers.Coord;
+import com.blocktyper.v1_2_6.helpers.IClickedBlockHelper.PlacementOrientation;
 
 public class BuildProcess {
 
